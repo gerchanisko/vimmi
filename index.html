@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="cs" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vimmi — Méně chaosu. Více prostoru pro to důležité.</title>
+  <meta name="description" content="Vimmi je minimalistický osobní prostor pro organizaci každodenního života. Úkoly, poznámky, projekty a informace na jednom místě.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="assets/logo.svg" alt="Vimmi" width="28" height="28">
+        <span>Vimmi</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#produkt">Produkt</a>
+        <a href="#funkce">Funkce</a>
+        <a href="#vyhledavani">Chytré vyhledávání</a>
+        <a href="#o-vimmi">O Vimmi</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Přepnout tmavý režim">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <a href="#" class="btn btn-ghost nav-login">Přihlásit</a>
+        <a href="#" class="btn btn-primary nav-cta">Začít používat</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <nav class="mobile-menu-links">
+      <a href="#produkt">Produkt</a>
+      <a href="#funkce">Funkce</a>
+      <a href="#vyhledavani">Chytré vyhledávání</a>
+      <a href="#o-vimmi">O Vimmi</a>
+    </nav>
+    <div class="mobile-menu-actions">
+      <a href="#" class="btn btn-ghost">Přihlásit</a>
+      <a href="#" class="btn btn-primary">Začít používat</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <p class="hero-eyebrow" data-animate>Všechno na jednom místě</p>
+        <h1 class="hero-title" data-animate>Měj své věci konečně<br>pod kontrolou.</h1>
+        <p class="hero-subtitle" data-animate>Vimmi spojuje úkoly, poznámky a projekty do jednoho jednoduchého prostoru.</p>
+        <div class="hero-actions" data-animate>
+          <a href="#" class="btn btn-primary btn-lg">Začít používat</a>
+          <a href="#produkt" class="btn btn-outline btn-lg">Zjistit více</a>
+        </div>
+        <p class="hero-note" data-animate>Jednoduché. Přehledné. V jednom prostoru.</p>
+      </div>
+    </section>
+
+    <!-- Product Showcase -->
+    <section class="product-showcase" id="produkt">
+      <div class="container">
+        <div class="showcase-label" data-animate>
+          <span class="showcase-dot"></span>
+          <span>Produkt</span>
+        </div>
+        <h2 class="showcase-title" data-animate>Vimmi v praxi</h2>
+        <p class="showcase-desc" data-animate>Podívejte se, jak vypadá jednoduchý prostor pro vaše věci.</p>
+
+        <div class="mockup" data-animate>
+          <div class="mockup-window">
+            <div class="mockup-titlebar">
+              <div class="mockup-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <div class="mockup-title">Vimmi</div>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-sidebar">
+                <div class="mockup-nav">
+                  <a class="mockup-nav-item active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    Úkoly
+                  </a>
+                  <a class="mockup-nav-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Poznámky
+                  </a>
+                  <a class="mockup-nav-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    Projekty
+                  </a>
+                </div>
+                <div class="mockup-projects">
+                  <div class="mockup-project-label">Projekty</div>
+                  <div class="mockup-project active">
+                    <span class="project-dot" style="background: #6D63FF;"></span>
+                    Osobní
+                  </div>
+                  <div class="mockup-project">
+                    <span class="project-dot" style="background: #34A853;"></span>
+                    Škola
+                  </div>
+                  <div class="mockup-project">
+                    <span class="project-dot" style="background: #EA4335;"></span>
+                    Homelab
+                  </div>
+                  <div class="mockup-project">
+                    <span class="project-dot" style="background: #FBBC04;"></span>
+                    Minecraft
+                  </div>
+                  <div class="mockup-project">
+                    <span class="project-dot" style="background: #4285F4;"></span>
+                    Vimmi
+                  </div>
+                </div>
+              </div>
+              <div class="mockup-content">
+                <div class="mockup-content-header">
+                  <h3>Dnes</h3>
+                  <span class="mockup-count">4 úkoly</span>
+                </div>
+                <div class="mockup-tasks">
+                  <div class="mockup-task">
+                    <div class="checkbox"></div>
+                    <span>Dokončit projekt</span>
+                  </div>
+                  <div class="mockup-task">
+                    <div class="checkbox"></div>
+                    <span>Připravit poznámky</span>
+                  </div>
+                  <div class="mockup-task done">
+                    <div class="checkbox checked">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <span>Uspořádat soubory</span>
+                  </div>
+                  <div class="mockup-task">
+                    <div class="checkbox"></div>
+                    <span>Naplánovat další týden</span>
+                  </div>
+                </div>
+                <div class="mockup-divider"></div>
+                <div class="mockup-note-preview">
+                  <div class="mockup-note-title">Home Server</div>
+                  <div class="mockup-note-text">TrueNAS běží na domácím serveru. Dalším krokem bude rozšíření úložiště...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vimmi Sync -->
+    <section class="sync" id="sync">
+      <div class="container">
+        <div class="section-grid">
+          <div class="section-content" data-animate>
+            <p class="section-label">Vimmi Sync</p>
+            <h2 class="section-title">Všechno, co potřebuješ.<br>Na každém zařízení.</h2>
+            <p class="section-text">Vimmi Sync bude budoucí systém synchronizace dat mezi zařízeními. Uživatel vytvoří poznámku na počítači a během chvíle ji uvidí na telefonu.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="sync-visual">
+              <div class="sync-device">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                <span>Laptop</span>
+              </div>
+              <div class="sync-arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+              <div class="sync-device">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                <span>Phone</span>
+              </div>
+              <div class="sync-arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+              <div class="sync-device">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                <span>Tablet</span>
+              </div>
+            </div>
+            <p class="sync-caption">Vimmi Sync udržuje tvoje poznámky, úkoly a projekty synchronizované napříč zařízeními.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Idea -->
+    <section class="main-idea">
+      <div class="container">
+        <h2 class="idea-title" data-animate>Všechno důležité.<br>Bez zbytečného chaosu.</h2>
+        <p class="idea-text" data-animate>Vimmi spojuje věci, které potřebuješ každý den. Úkoly, poznámky, projekty a informace jsou konečně na jednom místě.</p>
+      </div>
+    </section>
+
+    <!-- Tasks -->
+    <section class="tasks" id="ukoly">
+      <div class="container">
+        <div class="section-grid">
+          <div class="section-content" data-animate>
+            <p class="section-label">Úkoly</p>
+            <h2 class="section-title">Úkoly bez zbytečností.</h2>
+            <p class="section-text">Zapiš si, co potřebuješ udělat, a jednoduše pokračuj dál. Vimmi se nesnaží z jednoduchého úkolu vytvořit komplikovaný projekt.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="task-card">
+              <div class="task-card-header">
+                <span class="task-card-title">Dnes</span>
+                <span class="task-card-count">4</span>
+              </div>
+              <div class="task-list">
+                <div class="task-item">
+                  <div class="task-checkbox"></div>
+                  <span class="task-text">Dokončit projekt</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-checkbox"></div>
+                  <span class="task-text">Připravit poznámky</span>
+                </div>
+                <div class="task-item completed">
+                  <div class="task-checkbox">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="task-text">Uspořádat soubory</span>
+                </div>
+                <div class="task-item">
+                  <div class="task-checkbox"></div>
+                  <span class="task-text">Naplánovat další týden</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notes -->
+    <section class="notes" id="poznamky">
+      <div class="container">
+        <div class="section-grid reverse">
+          <div class="section-content" data-animate>
+            <p class="section-label">Poznámky</p>
+            <h2 class="section-title">Myšlenky, které nechceš ztratit.</h2>
+            <p class="section-text">Poznámky jsou místo pro nápady, informace, zápisky a všechno, co si chceš uchovat.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="note-card">
+              <div class="note-card-header">
+                <span class="note-card-badge">Poznámka</span>
+              </div>
+              <h3 class="note-card-title">Home Server</h3>
+              <p class="note-card-text">TrueNAS běží na domácím serveru. Dalším krokem bude rozšíření úložiště o disky 8TB. Připravit zálohu konfigurace.</p>
+              <div class="note-card-footer">
+                <span class="note-card-date">Dnes</span>
+                <span class="note-card-tag">Homelab</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Smart Search -->
+    <section class="search" id="vyhledavani">
+      <div class="container">
+        <div class="section-grid">
+          <div class="section-content" data-animate>
+            <p class="section-label">Chytré vyhledávání</p>
+            <h2 class="section-title">Najdi to, i když nevíš, kde to je.</h2>
+            <p class="section-text">Vimmi pomáhá hledat podle významu. Nemusíš si pamatovat přesný název poznámky ani místo, kam jsi ji uložil.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="search-mockup">
+              <div class="search-input">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Kde mám poznámky k Linuxu?</span>
+              </div>
+              <div class="search-results">
+                <div class="search-result">
+                  <div class="search-result-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  </div>
+                  <div class="search-result-content">
+                    <div class="search-result-title">Fedora Setup</div>
+                    <div class="search-result-desc">Nastavení Fedory, Hyprlandu a potřebných programů...</div>
+                  </div>
+                </div>
+                <div class="search-result">
+                  <div class="search-result-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  </div>
+                  <div class="search-result-content">
+                    <div class="search-result-title">Home Server</div>
+                    <div class="search-result-desc">Konfigurace TrueNAS a domácího serveru...</div>
+                  </div>
+                </div>
+                <div class="search-result">
+                  <div class="search-result-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  </div>
+                  <div class="search-result-content">
+                    <div class="search-result-title">Hyprland</div>
+                    <div class="search-result-desc">Konfigurace Waybaru, Kitty a dalších programů...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects" id="projekty">
+      <div class="container">
+        <div class="section-grid reverse">
+          <div class="section-content" data-animate>
+            <p class="section-label">Projekty</p>
+            <h2 class="section-title">Velké věci začínají malými kroky.</h2>
+            <p class="section-text">Projekty ti umožní spojit související úkoly a poznámky bez zbytečně složitých systémů.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="project-list">
+              <div class="project-item">
+                <span class="project-dot" style="background: #6D63FF;"></span>
+                <span class="project-name">Osobní</span>
+                <span class="project-count">12</span>
+              </div>
+              <div class="project-item">
+                <span class="project-dot" style="background: #34A853;"></span>
+                <span class="project-name">Škola</span>
+                <span class="project-count">8</span>
+              </div>
+              <div class="project-item">
+                <span class="project-dot" style="background: #EA4335;"></span>
+                <span class="project-name">Homelab</span>
+                <span class="project-count">5</span>
+              </div>
+              <div class="project-item">
+                <span class="project-dot" style="background: #FBBC04;"></span>
+                <span class="project-name">Minecraft</span>
+                <span class="project-count">3</span>
+              </div>
+              <div class="project-item">
+                <span class="project-dot" style="background: #4285F4;"></span>
+                <span class="project-name">Vimmi</span>
+                <span class="project-count">7</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vimmi AI -->
+    <section class="ai" id="ai">
+      <div class="container">
+        <div class="section-grid">
+          <div class="section-content" data-animate>
+            <p class="section-label">Vimmi AI</p>
+            <h2 class="section-title">Tvoje AI. Tvůj poskytovatel.<br>Tvoje data.</h2>
+            <p class="section-text">Vimmi AI je volitelná vrstva uvnitř Vimmi. Vyber si poskytovatele, zadej vlastní API klíč a Vimmi AI ti pomůže s vyhledáváním, shrnováním a organizací tvých informací.</p>
+            <p class="ai-note">API klíč poskytuje váš vybraný AI poskytovatel. Vimmi neposkytuje ani automaticky nepřiděluje AI API klíče.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="ai-settings">
+              <div class="ai-settings-header">
+                <h3>Nastavení AI</h3>
+              </div>
+              <div class="ai-settings-body">
+                <div class="ai-field">
+                  <label class="ai-field-label">AI poskytovatel</label>
+                  <div class="ai-select">
+                    <span>OpenAI</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                </div>
+                <div class="ai-field">
+                  <label class="ai-field-label">API klíč</label>
+                  <div class="ai-input">
+                    <span>sk-••••••••••••••••••••</span>
+                  </div>
+                </div>
+                <div class="ai-field">
+                  <label class="ai-field-label">Model</label>
+                  <div class="ai-select">
+                    <span>Vybrat model</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                </div>
+                <button class="btn btn-primary ai-connect">Připojit poskytovatele</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simplicity -->
+    <section class="simplicity">
+      <div class="container">
+        <p class="simplicity-label" data-animate>Navrženo pro klid</p>
+        <h2 class="simplicity-title" data-animate>Produktivita nemusí být<br>další práce.</h2>
+        <p class="simplicity-text" data-animate>Vimmi odstraňuje vrstvy mezi myšlením a samotnou prací. Žádné nekonečné nastavování. Žádné komplikované systémy. Jen místo pro věci, které potřebuješ.</p>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="funkce">
+      <div class="container">
+        <div class="features-header" data-animate>
+          <p class="section-label">Funkce</p>
+          <h2 class="section-title">Všechno, co potřebuješ.</h2>
+          <p class="section-text">Jednoduché nástroje pro každodenní organizaci.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <h3 class="feature-title">Úkoly</h3>
+            <p class="feature-desc">Měj přehled o tom, co je potřeba udělat.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <h3 class="feature-title">Poznámky</h3>
+            <p class="feature-desc">Ukládej nápady, informace a důležité věci.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3 class="feature-title">Projekty</h3>
+            <p class="feature-desc">Organizuj větší věci bez zbytečné složitosti.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <h3 class="feature-title">Chytré vyhledávání</h3>
+            <p class="feature-desc">Najdi informace podle významu.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <h3 class="feature-title">Synchronizace</h3>
+            <p class="feature-desc">V budoucnu měj všechno dostupné na více zařízeních.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 class="feature-title">Soukromí</h3>
+            <p class="feature-desc">Tvoje osobní informace by měly zůstat tvoje.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Productivity -->
+    <section class="productivity" id="produktivita">
+      <div class="container">
+        <div class="features-header" data-animate>
+          <p class="section-label">Produktivita</p>
+          <h2 class="section-title">Rychlejší práce.</h2>
+          <p class="section-text">Funkce, které ti ušetří čas.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <h3 class="feature-title">Quick Capture</h3>
+            <p class="feature-desc">Zapiš to dřív, než to zapomeneš. Rychle vytvoř poznámku, úkol nebo nápad.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            </div>
+            <h3 class="feature-title">Inbox</h3>
+            <p class="feature-desc">Nejdřív zachytit. Potom organizovat. Místo pro věci, které zatím nechceš řešit.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+            </div>
+            <h3 class="feature-title">Command Menu</h3>
+            <p class="feature-desc">⌘ K nebo Ctrl K. Rychlé ovládání bez myši. Hledej, vytvářej, otevírej.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy & Offline -->
+    <section class="privacy" id="soukromi">
+      <div class="container">
+        <div class="features-header" data-animate>
+          <p class="section-label">Soukromí</p>
+          <h2 class="section-title">Tvoje data jsou tvoje.</h2>
+          <p class="section-text">Vimmi bude pracovat s osobními poznámkami a informacemi, takže soukromí musí být důležitou součástí produktu.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 class="feature-title">Žádné prodávání dat</h3>
+            <p class="feature-desc">Tvoje osobní informace nebudou nikdy prodávány.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <h3 class="feature-title">Offline režim</h3>
+            <p class="feature-desc">Internet není podmínkou pro každou maličkost. Základní práce funguje i offline.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <div class="feature-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <h3 class="feature-title">Export dat</h3>
+            <p class="feature-desc">Tvoje data. Tvoje kontrola. Možnost exportu do Markdown, JSON nebo CSV.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Focus -->
+    <section class="focus" id="focus">
+      <div class="container">
+        <div class="section-grid">
+          <div class="section-content" data-animate>
+            <p class="section-label">Focus</p>
+            <h2 class="section-title">Méně rozptylování.</h2>
+            <p class="section-text">Vimmi by mohl mít jednoduchý Focus režim. Zobrazí pouze aktuální úkol, důležité informace a minimum rozhraní. Žádné zbytečné widgety.</p>
+          </div>
+          <div class="section-visual" data-animate>
+            <div class="focus-mockup">
+              <div class="focus-item">
+                <div class="focus-checkbox"></div>
+                <span>Dokončit projekt</span>
+              </div>
+              <div class="focus-item">
+                <div class="focus-checkbox"></div>
+                <span>Připravit poznámky</span>
+              </div>
+              <div class="focus-item completed">
+                <div class="focus-checkbox">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <span>Uspořádat soubory</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="philosophy" id="o-vimmi">
+      <div class="container">
+        <h2 class="philosophy-title" data-animate>Méně chaosu.<br>Více prostoru pro to důležité.</h2>
+        <p class="philosophy-text" data-animate>Vimmi vzniká z jednoduché myšlenky: nástroje pro produktivitu by ti neměly přidávat další práci. Měly by ti ji usnadnit.</p>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="roadmap" id="roadmap">
+      <div class="container">
+        <div class="features-header" data-animate>
+          <p class="section-label">Roadmapa</p>
+          <h2 class="section-title">Kam Vimmi směřuje</h2>
+        </div>
+        <div class="roadmap-grid">
+          <div class="roadmap-col" data-animate>
+            <h3 class="roadmap-heading">Dnes</h3>
+            <ul class="roadmap-list">
+              <li class="roadmap-item done">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Poznámky
+              </li>
+              <li class="roadmap-item done">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Úkoly
+              </li>
+              <li class="roadmap-item done">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Projekty
+              </li>
+              <li class="roadmap-item done">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Vyhledávání
+              </li>
+            </ul>
+          </div>
+          <div class="roadmap-col" data-animate>
+            <h3 class="roadmap-heading">Brzy</h3>
+            <ul class="roadmap-list">
+              <li class="roadmap-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                Vimmi Sync
+              </li>
+              <li class="roadmap-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                Mobilní aplikace
+              </li>
+              <li class="roadmap-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                Offline režim
+              </li>
+            </ul>
+          </div>
+          <div class="roadmap-col" data-animate>
+            <h3 class="roadmap-heading">Později</h3>
+            <ul class="roadmap-list">
+              <li class="roadmap-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                Vimmi AI
+              </li>
+              <li class="roadmap-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                Pokročilé propojení informací
+              </li>
+              <li class="roadmap-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                Další platformy
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta">
+      <div class="container">
+        <h2 class="cta-title" data-animate>Udělej si prostor pro to důležité.</h2>
+        <p class="cta-subtitle" data-animate>Vimmi. Jednoduché místo pro všechno, co nechceš zapomenout.</p>
+        <div class="cta-actions" data-animate>
+          <a href="#" class="btn btn-primary btn-lg">Začít používat</a>
+        </div>
+        <p class="cta-note" data-animate>Vimmi je ve vývoji.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <img src="assets/logo.svg" alt="Vimmi" width="24" height="24">
+            <span>Vimmi</span>
+          </a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Produkt</h4>
+          <a href="#funkce" class="footer-link">Funkce</a>
+          <a href="#vyhledavani" class="footer-link">Chytré vyhledávání</a>
+          <a href="#roadmap" class="footer-link">Roadmapa</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Informace</h4>
+          <a href="#o-vimmi" class="footer-link">O Vimmi</a>
+          <a href="#soukromi" class="footer-link">Soukromí</a>
+          <a href="#" class="footer-link">Podmínky</a>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Projekt</h4>
+          <a href="#" class="footer-link">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Vimmi</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
