@@ -23,7 +23,6 @@
   --accent-text: #5149e0;
   --accent-soft: rgb(109 99 255 / 0.09);
   --accent-line: rgb(109 99 255 / 0.35);
-  --glow: rgb(109 99 255 / 0.22);
   --clay: #c86f59;
   --ochre: #c4913f;
   --sage: #4f8a63;
@@ -53,7 +52,6 @@
     --accent-text: #a49dff;
     --accent-soft: rgb(129 120 255 / 0.14);
     --accent-line: rgb(140 132 255 / 0.45);
-    --glow: rgb(109 99 255 / 0.32);
     --clay: #d6836e;
     --ochre: #d0a052;
     --sage: #75aa88;
@@ -75,7 +73,6 @@
   --accent-text: #a49dff;
   --accent-soft: rgb(129 120 255 / 0.14);
   --accent-line: rgb(140 132 255 / 0.45);
-  --glow: rgb(109 99 255 / 0.32);
   --clay: #d6836e;
   --ochre: #d0a052;
   --sage: #75aa88;
@@ -193,10 +190,7 @@ kbd {
   height: 26px;
 }
 .accent-text {
-  background: linear-gradient(100deg, var(--accent) 10%, #9b6bff 55%, #d06ad8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent-text);
 }
 
 /* ---------- buttons ---------- */
@@ -380,16 +374,7 @@ kbd {
   padding: clamp(56px, 9vw, 110px) 0 40px;
   overflow: hidden;
 }
-.hero-glow {
-  position: absolute;
-  inset: -200px 0 auto;
-  height: 900px;
-  background:
-    radial-gradient(600px 340px at 50% 20%, var(--glow), transparent 70%),
-    radial-gradient(500px 300px at 20% 50%, rgb(208 106 216 / 0.1), transparent 70%),
-    radial-gradient(500px 300px at 80% 55%, rgb(80 160 255 / 0.1), transparent 70%);
-  pointer-events: none;
-}
+
 .hero-text {
   position: relative;
   text-align: center;
@@ -454,15 +439,7 @@ kbd {
   position: relative;
   margin: clamp(48px, 7vw, 76px) 0 0;
 }
-.hero-shot::before {
-  content: "";
-  position: absolute;
-  inset: 8% 6% -4%;
-  background: var(--glow);
-  filter: blur(80px);
-  border-radius: 50%;
-  z-index: -1;
-}
+
 .window {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
@@ -900,14 +877,7 @@ kbd {
   box-shadow: var(--shadow-window);
   overflow: hidden;
 }
-.download-card::before {
-  content: "";
-  position: absolute;
-  inset: -40% -20% auto;
-  height: 360px;
-  background: radial-gradient(closest-side, var(--glow), transparent);
-  pointer-events: none;
-}
+
 .download-card .section-head {
   position: relative;
   margin-bottom: 32px;
