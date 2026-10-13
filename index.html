@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="cs" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vimmi — Všechno důležité. Na jednom místě.</title>
+  <meta name="description" content="Vimmi je klidný osobní pracovní prostor, který propojuje poznámky, úkoly a projekty na jednom místě. Méně chaosu. Více prostoru pro to důležité.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:site_name" content="Vimmi">
+  <meta property="og:title" content="Vimmi — Všechno důležité. Na jednom místě.">
+  <meta property="og:description" content="Poznámky, úkoly a projekty propojené do jednoho přehledného prostoru. Méně chaosu. Více prostoru pro to důležité.">
+  <meta property="og:url" content="https://gerchanisko.github.io/vimmi/">
+  <meta property="og:image" content="https://gerchanisko.github.io/vimmi/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Vimmi a věta: Všechno důležité. Na jednom místě.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.remove('no-js');
+      root.classList.add('js');
+      try {
+        var theme = localStorage.getItem('vimmi-theme');
+        if (theme === 'light' || theme === 'dark') root.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+  <script src="js/main.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#obsah">Přeskočit na obsah</a>
+
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="vimmi-mark" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z"/>
+      <circle class="mark-dot" cx="18.38" cy="6.24" r="2.24"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.25"/><path d="m10.25 10.25 3.25 3.25"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 16 16"><path d="M2.5 9.25 4.25 3.5h7.5l1.75 5.75v3.25h-11z"/><path d="M2.5 9.25h3l.75 1.5h3.5l.75-1.5h3"/></symbol>
+    <symbol id="i-star" viewBox="0 0 16 16"><path d="m8 2.5 1.65 3.35 3.7.55-2.68 2.6.63 3.68L8 10.95l-3.3 1.73.63-3.68-2.68-2.6 3.7-.55z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 16 16"><rect x="2.5" y="3.25" width="11" height="10.25" rx="2"/><path d="M2.5 6.75h11M5.5 2v2.5M10.5 2v2.5"/></symbol>
+    <symbol id="i-note" viewBox="0 0 16 16"><path d="M4 2.5h5.25L12 5.25v8.25H4z"/><path d="M6 8h4M6 10.5h2.75"/></symbol>
+    <symbol id="i-task" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="m5.75 8.1 1.6 1.6 2.9-3"/></symbol>
+    <symbol id="i-file" viewBox="0 0 16 16"><path d="M4 2.5h5l3 3v8H4z"/><path d="M9 2.5v3h3"/></symbol>
+    <symbol id="i-link" viewBox="0 0 16 16"><path d="M7.25 8.75a2.5 2.5 0 0 0 3.5.1l1.9-1.9a2.5 2.5 0 0 0-3.55-3.55l-.6.6"/><path d="M8.75 7.25a2.5 2.5 0 0 0-3.5-.1l-1.9 1.9a2.5 2.5 0 0 0 3.55 3.55l.6-.6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 16 16"><path d="m5 6.5 3 3 3-3"/></symbol>
+    <symbol id="i-more" viewBox="0 0 16 16"><circle cx="3.75" cy="8" r=".6"/><circle cx="8" cy="8" r=".6"/><circle cx="12.25" cy="8" r=".6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 16 16"><path d="M5.5 10.5 10.5 5.5M6.25 5.5h4.25v4.25"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.75"/><path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.58 3.58l1.06 1.06M11.36 11.36l1.06 1.06M3.58 12.42l1.06-1.06M11.36 4.64l1.06-1.06"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 16 16"><path d="M13.25 9.6A5.5 5.5 0 0 1 6.4 2.75a5.5 5.5 0 1 0 6.85 6.85z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 5.5h11M2.5 10.5h11"/></symbol>
+    <symbol id="i-close" viewBox="0 0 16 16"><path d="m4 4 8 8M12 4l-8 8"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 16 16"><path d="m10.25 2.75 3 3-7.5 7.5h-3v-3z"/><path d="m8.75 4.25 3 3"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 16 16"><path d="M8 2.25 13.75 5.25 8 8.25 2.25 5.25z"/><path d="m2.25 8 5.75 3 5.75-3"/><path d="m2.25 10.75 5.75 3 5.75-3"/></symbol>
+    <symbol id="i-connect" viewBox="0 0 16 16"><circle cx="4.25" cy="4.25" r="1.75"/><circle cx="11.75" cy="11.75" r="1.75"/><path d="M6 4.25h2.25a3.5 3.5 0 0 1 3.5 3.5V10"/></symbol>
+    <symbol id="i-github" viewBox="0 0 16 16"><path fill="currentColor" stroke="none" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></symbol>
+  </svg>
+
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="Vimmi, zpět na začátek stránky">
+        <svg class="brand__mark" aria-hidden="true"><use href="#vimmi-mark"/></svg>
+        <span class="brand__name">Vimmi</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Hlavní navigace">
+        <ul class="site-nav__list">
+          <li><a class="site-nav__link" href="#funkce" data-nav-link="funkce">Funkce</a></li>
+          <li><a class="site-nav__link" href="#filozofie" data-nav-link="filozofie">Filozofie</a></li>
+          <li><a class="site-nav__link" href="#otazky" data-nav-link="otazky">Otázky</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="Přepnout na tmavý vzhled">
+          <svg class="icon theme-toggle__moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <svg class="icon theme-toggle__sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        </button>
+        <a class="button button--primary button--small site-header__cta" href="https://github.com/gerchanisko/vimmi">
+          Objevit Vimmi
+          <svg class="icon icon--small" aria-hidden="true"><use href="#i-external"/></svg>
+        </a>
+        <button class="icon-button menu-toggle" type="button" popovertarget="mobilni-menu" aria-label="Menu">
+          <svg class="icon menu-toggle__open" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon menu-toggle__close" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobilni-menu" popover data-mobile-menu>
+      <nav class="container" aria-label="Mobilní navigace">
+        <ul class="mobile-menu__list">
+          <li><a href="#funkce">Funkce</a></li>
+          <li><a href="#poznamky">Poznámky</a></li>
+          <li><a href="#ukoly">Úkoly a&nbsp;projekty</a></li>
+          <li><a href="#hledani">Hledání</a></li>
+          <li><a href="#filozofie">Filozofie</a></li>
+          <li><a href="#otazky">Otázky</a></li>
+        </ul>
+        <a class="button button--primary mobile-menu__cta" href="https://github.com/gerchanisko/vimmi">
+          Objevit Vimmi
+          <svg class="icon icon--small" aria-hidden="true"><use href="#i-external"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="obsah">
+
+    <!-- Úvod -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero__head">
+          <h1 class="hero__title" id="hero-title">
+            <span class="hero__line">Všechno důležité.</span>
+            <span class="hero__line hero__line--muted">Na jednom místě.</span>
+          </h1>
+          <div class="hero__side">
+            <p class="lead">Poznámky, úkoly a&nbsp;projekty propojené do jednoho přehledného prostoru. Bez&nbsp;zbytečného chaosu. Bez&nbsp;přepínání mezi desítkami aplikací.</p>
+            <div class="actions">
+              <a class="button button--primary" href="#funkce">Poznat Vimmi</a>
+              <a class="button button--secondary" href="#poznamky">Prozkoumat funkce</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__preview">
+          <div class="ui ui-window ui-app" role="img" aria-label="Ukázka rozhraní Vimmi. Vlevo postranní panel s hledáním a projekty, uprostřed dnešní úkoly a poslední poznámky, vpravo otevřená poznámka ze schůzky s truhlářem.">
+            <div class="ui-sidebar">
+              <div class="ui-workspace">
+                <span class="ui-workspace__badge"><svg><use href="#vimmi-mark"/></svg></span>
+                <span>Můj prostor</span>
+                <svg class="ui-icon ui-workspace__chevron"><use href="#i-chevron"/></svg>
+              </div>
+              <div class="ui-searchfield">
+                <svg class="ui-icon"><use href="#i-search"/></svg>
+                <span>Hledat</span>
+                <kbd>⌘K</kbd>
+              </div>
+              <div class="ui-navlist">
+                <div class="ui-navitem"><svg class="ui-icon"><use href="#i-inbox"/></svg><span>Schránka</span><span class="ui-count">3</span></div>
+                <div class="ui-navitem is-active"><svg class="ui-icon"><use href="#i-star"/></svg><span>Dnes</span><span class="ui-count">5</span></div>
+                <div class="ui-navitem"><svg class="ui-icon"><use href="#i-calendar"/></svg><span>Nadcházející</span></div>
+                <div class="ui-navitem"><svg class="ui-icon"><use href="#i-note"/></svg><span>Poznámky</span></div>
+              </div>
+              <p class="ui-label">Projekty</p>
+              <div class="ui-navlist">
+                <div class="ui-navitem"><span class="ui-dot ui-dot--ochre"></span><span>Rekonstrukce kuchyně</span></div>
+                <div class="ui-navitem"><span class="ui-dot ui-dot--blue"></span><span>Redesign webu</span></div>
+                <div class="ui-navitem"><span class="ui-dot ui-dot--sage"></span><span>Diplomová práce</span></div>
+                <div class="ui-navitem"><span class="ui-dot ui-dot--clay"></span><span>Lisabon v&nbsp;květnu</span></div>
+              </div>
+            </div>
+
+            <div class="ui-main">
+              <div class="ui-toolbar">
+                <div>
+                  <p class="ui-title">Dnes</p>
+                  <p class="ui-subtitle">Úterý 13. října</p>
+                </div>
+                <span class="ui-iconbtn"><svg class="ui-icon"><use href="#i-plus"/></svg></span>
+              </div>
+
+              <p class="ui-group">Naplánováno <span>5</span></p>
+              <div class="ui-tasklist">
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Poslat truhláři rozměry niky u&nbsp;lednice</span>
+                  <span class="ui-prio" data-level="3"><i></i><i></i><i></i></span>
+                  <span class="ui-tag"><span class="ui-dot ui-dot--ochre"></span>Rekonstrukce kuchyně</span>
+                </div>
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Projít zpětnou vazbu k&nbsp;úvodní stránce</span>
+                  <span class="ui-time">14:00</span>
+                  <span class="ui-tag"><span class="ui-dot ui-dot--blue"></span>Redesign webu</span>
+                </div>
+                <div class="ui-task is-done">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Odeslat vedoucímu osnovu třetí kapitoly</span>
+                  <span class="ui-tag"><span class="ui-dot ui-dot--sage"></span>Diplomová práce</span>
+                </div>
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Rezervovat ubytování v&nbsp;Alfamě</span>
+                  <span class="ui-tag"><span class="ui-dot ui-dot--clay"></span>Lisabon v&nbsp;květnu</span>
+                </div>
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Domluvit elektrikáře na přesun zásuvek</span>
+                  <span class="ui-prio" data-level="2"><i></i><i></i><i></i></span>
+                  <span class="ui-tag"><span class="ui-dot ui-dot--ochre"></span>Rekonstrukce kuchyně</span>
+                </div>
+              </div>
+
+              <p class="ui-group">Poznámky z&nbsp;tohoto týdne</p>
+              <div class="ui-notelist">
+                <div class="ui-noterow is-selected">
+                  <svg class="ui-icon"><use href="#i-note"/></svg>
+                  <span class="ui-noterow__title">Schůzka s&nbsp;truhlářem</span>
+                  <span class="ui-noterow__snippet">Linka do tvaru L, dubová deska 38 mm…</span>
+                  <span class="ui-time">9:41</span>
+                </div>
+                <div class="ui-noterow">
+                  <svg class="ui-icon"><use href="#i-note"/></svg>
+                  <span class="ui-noterow__title">Struktura třetí kapitoly</span>
+                  <span class="ui-noterow__snippet">Metodika, výsledky rozhovorů, shrnutí…</span>
+                  <span class="ui-time">Včera</span>
+                </div>
+                <div class="ui-noterow">
+                  <svg class="ui-icon"><use href="#i-note"/></svg>
+                  <span class="ui-noterow__title">Co sbalit do Lisabonu</span>
+                  <span class="ui-noterow__snippet">Adaptér, lehká bunda, sluchátka…</span>
+                  <span class="ui-time">Ne</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-detail">
+              <p class="ui-breadcrumb"><span class="ui-dot ui-dot--ochre"></span>Rekonstrukce kuchyně <span class="ui-breadcrumb__sep">/</span> Poznámky</p>
+              <p class="ui-doc-title">Schůzka s&nbsp;truhlářem</p>
+              <p class="ui-doc-meta">Dnes 9:41 · 2 propojené úkoly</p>
+              <div class="ui-doc">
+                <p>Prohlídka bytu ve čtvrtek. Na čem jsme se domluvili:</p>
+                <ul>
+                  <li>Linka do tvaru L, dubová pracovní deska 38 mm</li>
+                  <li>Horní skříňky až ke stropu, bez úchytek</li>
+                  <li>Zásuvky u&nbsp;okna posunout o&nbsp;20 cm doleva</li>
+                </ul>
+                <div class="ui-embed">
+                  <span class="ui-check"></span>
+                  <span>Poslat truhláři rozměry niky u&nbsp;lednice</span>
+                  <span class="ui-time">Pá</span>
+                </div>
+                <p>Rozpočet zatím drží. Nabídka je v&nbsp;podkladech projektu.</p>
+              </div>
+              <div class="ui-backlinks">
+                <p class="ui-label">Propojeno</p>
+                <div class="ui-backlink"><svg class="ui-icon"><use href="#i-task"/></svg>Domluvit elektrikáře</div>
+                <div class="ui-backlink"><svg class="ui-icon"><use href="#i-file"/></svg>Půdorys kuchyně.pdf</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Přehled -->
+    <section class="section overview" id="funkce" aria-labelledby="funkce-title" data-section="funkce">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">Přehled</p>
+            <h2 class="section-title" id="funkce-title">Méně hledání. Více soustředění.</h2>
+          </div>
+          <div class="section-head__text">
+            <p class="lead">Informace má cenu jen tehdy, když ji snadno najdeš, pochopíš a&nbsp;propojíš s&nbsp;tím, co už víš.</p>
+            <p>Vimmi proto nerozděluje tvou práci do oddělených aplikací. Poznámky, úkoly a&nbsp;projekty žijí v&nbsp;jednom prostoru a&nbsp;navzájem o&nbsp;sobě vědí. Méně přepínání, méně hledání a&nbsp;víc pozornosti pro samotnou práci.</p>
+          </div>
+        </div>
+
+        <ul class="capabilities" data-reveal>
+          <li class="capability">
+            <svg class="icon capability__icon" aria-hidden="true"><use href="#i-pen"/></svg>
+            <h3 class="capability__title">Zachytit</h3>
+            <p>Myšlenku, úkol nebo odkaz zapíšeš během pár vteřin. Třídit můžeš později, až na to bude čas.</p>
+          </li>
+          <li class="capability">
+            <svg class="icon capability__icon" aria-hidden="true"><use href="#i-layers"/></svg>
+            <h3 class="capability__title">Uspořádat</h3>
+            <p>Projekty a&nbsp;štítky dají věcem jasnou strukturu. Bez složitého nastavování a&nbsp;bez složek v&nbsp;pěti úrovních.</p>
+          </li>
+          <li class="capability">
+            <svg class="icon capability__icon" aria-hidden="true"><use href="#i-search"/></svg>
+            <h3 class="capability__title">Najít</h3>
+            <p>Jedno pole prohledá poznámky, úkoly i&nbsp;projekty najednou. Stačí vědět, o&nbsp;čem to bylo.</p>
+          </li>
+          <li class="capability">
+            <svg class="icon capability__icon" aria-hidden="true"><use href="#i-connect"/></svg>
+            <h3 class="capability__title">Propojit</h3>
+            <p>Poznámka ví o&nbsp;úkolu, úkol o&nbsp;projektu. Souvislosti zůstávají vidět a&nbsp;nic se neztratí v&nbsp;jiné aplikaci.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Poznámky -->
+    <section class="section feature feature--notes" id="poznamky" aria-labelledby="poznamky-title" data-section="funkce">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div class="section-head__main">
+            <p class="eyebrow">Poznámky</p>
+            <h2 class="section-title" id="poznamky-title">Myšlenky, které nezapadnou.</h2>
+            <p class="lead">Nápad cestou do práce, zápis ze schůzky, rozepsaná kapitola. Ve Vimmi je zapíšeš hned a&nbsp;najdeš je i&nbsp;za měsíc. Bez&nbsp;přemýšlení, kam vlastně patří.</p>
+          </div>
+          <div class="section-head__text">
+            <dl class="definitions">
+              <div>
+                <dt>Rychlý zápis</dt>
+                <dd>Nová poznámka je vždy jednu klávesovou zkratku daleko. Nejdřív piš, třídit můžeš potom.</dd>
+              </div>
+              <div>
+                <dt>Čisté psaní</dt>
+                <dd>Nadpisy, seznamy, citace a&nbsp;odkazy. Žádné lišty plné tlačítek, které odvádějí pozornost od textu.</dd>
+              </div>
+              <div>
+                <dt>Souvislosti</dt>
+                <dd>Poznámku připojíš k&nbsp;projektu nebo z&nbsp;jedné věty rovnou uděláš úkol, který na ni bude odkazovat.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="feature__visual" data-reveal>
+          <div class="ui ui-window ui-notes" role="img" aria-label="Ukázka poznámek ve Vimmi. Vlevo seznam poznámek s projekty a daty, vpravo otevřená poznámka Struktura třetí kapitoly s nadpisy, osnovou, citací a připojeným úkolem.">
+            <div class="ui-notes__list">
+              <div class="ui-panelhead">
+                <p class="ui-panelhead__title">Poznámky</p>
+                <span class="ui-iconbtn"><svg class="ui-icon"><use href="#i-search"/></svg></span>
+                <span class="ui-iconbtn"><svg class="ui-icon"><use href="#i-plus"/></svg></span>
+              </div>
+              <div class="ui-notecard">
+                <p class="ui-notecard__title">Schůzka s&nbsp;truhlářem</p>
+                <p class="ui-notecard__snippet">Linka do tvaru L, dubová deska 38 mm, horní skříňky až ke stropu.</p>
+                <p class="ui-notecard__meta"><span class="ui-dot ui-dot--ochre"></span>Rekonstrukce kuchyně · Dnes</p>
+              </div>
+              <div class="ui-notecard is-selected">
+                <p class="ui-notecard__title">Struktura třetí kapitoly</p>
+                <p class="ui-notecard__snippet">Cíl kapitoly, osnova a&nbsp;poznámky k&nbsp;rozhovorům s&nbsp;respondenty.</p>
+                <p class="ui-notecard__meta"><span class="ui-dot ui-dot--sage"></span>Diplomová práce · Včera</p>
+              </div>
+              <div class="ui-notecard">
+                <p class="ui-notecard__title">Zpětná vazba k&nbsp;úvodní stránce</p>
+                <p class="ui-notecard__snippet">Méně textu v&nbsp;záhlaví, jasnější hlavní tlačítko, kratší formulář.</p>
+                <p class="ui-notecard__meta"><span class="ui-dot ui-dot--blue"></span>Redesign webu · Po</p>
+              </div>
+              <div class="ui-notecard">
+                <p class="ui-notecard__title">Co sbalit do Lisabonu</p>
+                <p class="ui-notecard__snippet">Adaptér, lehká bunda, sluchátka do letadla, pohodlné boty.</p>
+                <p class="ui-notecard__meta"><span class="ui-dot ui-dot--clay"></span>Lisabon v&nbsp;květnu · 9. 10.</p>
+              </div>
+              <div class="ui-notecard">
+                <p class="ui-notecard__title">Knihy na zimu</p>
+                <p class="ui-notecard__snippet">Klara a&nbsp;Slunce, Levá ruka tmy, něco od Hrabala.</p>
+                <p class="ui-notecard__meta">Bez projektu · 2. 10.</p>
+              </div>
+            </div>
+
+            <div class="ui-notes__editor">
+              <div class="ui-editorbar">
+                <p class="ui-breadcrumb"><span class="ui-dot ui-dot--sage"></span>Diplomová práce <span class="ui-breadcrumb__sep">/</span> Poznámky</p>
+                <span class="ui-iconbtn"><svg class="ui-icon"><use href="#i-more"/></svg></span>
+              </div>
+              <div class="ui-editor">
+                <p class="ui-doc-title ui-doc-title--large">Struktura třetí kapitoly</p>
+                <p class="ui-doc-meta">Upraveno včera · 412 slov</p>
+                <div class="ui-doc ui-doc--roomy">
+                  <p class="ui-doc__h">Cíl kapitoly</p>
+                  <p>Ukázat, jak respondenti pracují s&nbsp;informacemi během dne a&nbsp;ve kterých chvílích jim nástroje spíš překážejí.</p>
+                  <p class="ui-doc__h">Osnova</p>
+                  <ol>
+                    <li>Metodika sběru dat</li>
+                    <li>Výsledky rozhovorů</li>
+                    <li>Shrnutí a&nbsp;otevřené otázky</li>
+                  </ol>
+                  <blockquote>„Nejvíc času ztrácím hledáním věcí, o&nbsp;kterých vím, že je mám někde zapsané.“ <span>— respondent 7</span></blockquote>
+                  <div class="ui-embed">
+                    <span class="ui-check"></span>
+                    <span>Doplnit citace k&nbsp;metodice</span>
+                    <span class="ui-time">Čt</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Úkoly a projekty -->
+    <section class="section feature feature--tasks" id="ukoly" aria-labelledby="ukoly-title" data-section="funkce">
+      <div class="container feature__split">
+        <div class="feature__copy" data-reveal>
+          <p class="eyebrow">Úkoly a&nbsp;projekty</p>
+          <h2 class="section-title" id="ukoly-title">Od prvního nápadu k&nbsp;hotové věci.</h2>
+          <p class="lead">Úkoly vznikají z&nbsp;poznámek, schůzek i&nbsp;nápadů ve sprše. Ve Vimmi je spojíš s&nbsp;projektem, ke kterému patří, a&nbsp;každý den uvidíš, co si opravdu zaslouží pozornost.</p>
+          <dl class="definitions">
+            <div>
+              <dt>Projekty</dt>
+              <dd>Úkoly, poznámky a&nbsp;podklady jednoho cíle pohromadě. Žádné hledání, kde co leží.</dd>
+            </div>
+            <div>
+              <dt>Priority</dt>
+              <dd>Tři úrovně stačí. Důležité věci jsou vidět na první pohled, zbytek počká.</dd>
+            </div>
+            <div>
+              <dt>Dnes</dt>
+              <dd>Klidný přehled toho, co tě čeká, místo nekonečného seznamu všeho najednou.</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="feature__visual" data-reveal>
+          <div class="ui ui-window ui-project" role="img" aria-label="Ukázka projektu Rekonstrukce kuchyně. Pět z deseti úkolů je hotových. Úkoly jsou rozdělené na tento týden, později a hotovo, každý má prioritu a termín.">
+            <div class="ui-project__head">
+              <p class="ui-project__name"><span class="ui-dot ui-dot--ochre"></span>Rekonstrukce kuchyně</p>
+              <p class="ui-project__desc">Nová linka, přesun zásuvek a&nbsp;obklad. Hotovo do konce listopadu.</p>
+              <div class="ui-progress">
+                <span class="ui-progress__bar"><span></span></span>
+                <span class="ui-progress__label">5 z&nbsp;10 hotovo</span>
+              </div>
+              <div class="ui-tabs">
+                <span class="is-active">Úkoly</span>
+                <span>Poznámky <em>4</em></span>
+                <span>Podklady <em>3</em></span>
+              </div>
+            </div>
+
+            <div class="ui-project__body">
+              <p class="ui-group">Tento týden <span>3</span></p>
+              <div class="ui-tasklist">
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Poslat truhláři rozměry niky u&nbsp;lednice</span>
+                  <svg class="ui-icon ui-task__link"><use href="#i-note"/></svg>
+                  <span class="ui-prio" data-level="3"><i></i><i></i><i></i></span>
+                  <span class="ui-date">Pá</span>
+                </div>
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Domluvit elektrikáře na přesun zásuvek</span>
+                  <span class="ui-prio" data-level="3"><i></i><i></i><i></i></span>
+                  <span class="ui-date">Čt</span>
+                </div>
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Vybrat obklad za linku</span>
+                  <svg class="ui-icon ui-task__link"><use href="#i-link"/></svg>
+                  <span class="ui-prio" data-level="2"><i></i><i></i><i></i></span>
+                  <span class="ui-date">So</span>
+                </div>
+              </div>
+
+              <p class="ui-group">Později <span>2</span></p>
+              <div class="ui-tasklist">
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Rozhodnout o&nbsp;digestoři</span>
+                  <span class="ui-prio" data-level="1"><i></i><i></i><i></i></span>
+                  <span class="ui-date"></span>
+                </div>
+                <div class="ui-task">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Objednat odvoz staré linky</span>
+                  <span class="ui-prio" data-level="1"><i></i><i></i><i></i></span>
+                  <span class="ui-date">2. 11.</span>
+                </div>
+              </div>
+
+              <p class="ui-group">Hotovo <span>5</span></p>
+              <div class="ui-tasklist">
+                <div class="ui-task is-done">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Získat tři nabídky na linku</span>
+                  <span class="ui-date">8. 10.</span>
+                </div>
+                <div class="ui-task is-done">
+                  <span class="ui-check"></span>
+                  <span class="ui-task__title">Změřit kuchyň a&nbsp;nakreslit půdorys</span>
+                  <span class="ui-date">1. 10.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hledání -->
+    <section class="section feature feature--search" id="hledani" aria-labelledby="hledani-title" data-section="funkce">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Hledání</p>
+          <h2 class="section-title" id="hledani-title">Najdi souvislosti, nejen slova.</h2>
+          <p class="lead">Jedno pole prohledá poznámky, úkoly i&nbsp;projekty najednou. Nemusíš si pamatovat, kde co leží. Stačí vědět, o&nbsp;čem to bylo. A&nbsp;k výsledkům ti Vimmi ukáže i&nbsp;to, co s&nbsp;nimi souvisí.</p>
+        </div>
+
+        <div class="feature__visual feature__visual--center" data-reveal>
+          <div class="ui ui-window ui-palette" role="img" aria-label="Ukázka hledání ve Vimmi. Na dotaz truhlář se zobrazí dvě poznámky, jeden úkol a projekt Rekonstrukce kuchyně. Vedle výsledků jsou související položky, které hledané slovo neobsahují, ale patří k vybrané poznámce.">
+            <div class="ui-palette__input">
+              <svg class="ui-icon"><use href="#i-search"/></svg>
+              <span class="ui-palette__query">truhlář<span class="ui-caret"></span></span>
+              <kbd>esc</kbd>
+            </div>
+            <div class="ui-palette__filters">
+              <span class="is-active">Vše</span><span>Poznámky</span><span>Úkoly</span><span>Projekty</span>
+            </div>
+            <div class="ui-palette__body">
+              <div class="ui-palette__results">
+                <p class="ui-group">Poznámky</p>
+                <div class="ui-result is-selected">
+                  <svg class="ui-icon"><use href="#i-note"/></svg>
+                  <span class="ui-result__text">
+                    <span class="ui-result__title">Schůzka s <mark>truhlář</mark>em</span>
+                    <span class="ui-result__meta">Rekonstrukce kuchyně · Dnes</span>
+                  </span>
+                  <kbd>↵</kbd>
+                </div>
+                <div class="ui-result">
+                  <svg class="ui-icon"><use href="#i-note"/></svg>
+                  <span class="ui-result__text">
+                    <span class="ui-result__title">Nabídky na linku</span>
+                    <span class="ui-result__meta">…cena od <mark>truhlář</mark>e zahrnuje i&nbsp;montáž…</span>
+                  </span>
+                </div>
+                <p class="ui-group">Úkoly</p>
+                <div class="ui-result">
+                  <svg class="ui-icon"><use href="#i-task"/></svg>
+                  <span class="ui-result__text">
+                    <span class="ui-result__title">Poslat <mark>truhlář</mark>i&nbsp;rozměry niky u&nbsp;lednice</span>
+                    <span class="ui-result__meta">Termín v&nbsp;pátek</span>
+                  </span>
+                </div>
+                <p class="ui-group">Projekty</p>
+                <div class="ui-result">
+                  <span class="ui-dot ui-dot--ochre ui-result__dot"></span>
+                  <span class="ui-result__text">
+                    <span class="ui-result__title">Rekonstrukce kuchyně</span>
+                    <span class="ui-result__meta">10 úkolů · 4 poznámky · 3 podklady</span>
+                  </span>
+                </div>
+              </div>
+              <div class="ui-palette__related">
+                <p class="ui-group">Souvisí s&nbsp;vybranou poznámkou</p>
+                <div class="ui-related">
+                  <svg class="ui-icon"><use href="#i-task"/></svg>
+                  <span>Domluvit elektrikáře na přesun zásuvek</span>
+                </div>
+                <div class="ui-related">
+                  <svg class="ui-icon"><use href="#i-note"/></svg>
+                  <span>Rozpočet rekonstrukce</span>
+                </div>
+                <div class="ui-related">
+                  <svg class="ui-icon"><use href="#i-file"/></svg>
+                  <span>Půdorys kuchyně.pdf</span>
+                </div>
+                <p class="ui-palette__hint">Hledané slovo neobsahují, ale patří k&nbsp;sobě.</p>
+              </div>
+            </div>
+            <div class="ui-palette__footer">
+              <span><kbd>↑</kbd><kbd>↓</kbd> Procházet</span>
+              <span><kbd>↵</kbd> Otevřít</span>
+              <span><kbd>esc</kbd> Zavřít</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="assistant" data-reveal>
+          <div class="assistant__head">
+            <p class="status-tag">Připravujeme</p>
+            <h3 class="assistant__title">Asistent, který se drží v&nbsp;pozadí.</h3>
+          </div>
+          <div class="assistant__body">
+            <p>Do Vimmi chystáme volitelného AI asistenta. Měl by pomáhat tam, kde ruční práce zdržuje. Nebude ale hlavní postavou. Vimmi musí dávat smysl i&nbsp;bez něj a&nbsp;bez tvého svolení nic neudělá.</p>
+            <ul class="assistant__list">
+              <li>Shrnutí dlouhé poznámky do několika vět</li>
+              <li>Návrh úkolů ze zápisu ze schůzky</li>
+              <li>Upozornění na věci, které spolu souvisí</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Propojený prostor -->
+    <section class="section connected" id="propojeni" aria-labelledby="propojeni-title" data-section="funkce">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">Jeden prostor</p>
+            <h2 class="section-title" id="propojeni-title">Všechno spolu dává smysl.</h2>
+          </div>
+          <div class="section-head__text">
+            <p class="lead">Poznámky, úkoly, projekty a&nbsp;podklady nejsou oddělené ostrovy. Ve Vimmi tvoří jeden propojený celek, takže u&nbsp;každé věci vidíš, odkud přišla a&nbsp;kam vede.</p>
+          </div>
+        </div>
+
+        <div class="web" data-web data-reveal>
+          <div class="web__head">
+            <p class="web__project"><span class="ui-dot ui-dot--ochre"></span>Rekonstrukce kuchyně</p>
+            <p class="web__hint">Vyber libovolnou položku a&nbsp;uvidíš, s&nbsp;čím souvisí.</p>
+          </div>
+
+          <div class="web__columns">
+            <div class="web__column">
+              <h3 class="web__heading"><svg class="icon icon--small" aria-hidden="true"><use href="#i-note"/></svg>Poznámky</h3>
+              <ul class="web__list">
+                <li><button class="web__node" type="button" data-node="n1" data-links="t1 t2 f1" data-kind="poznamka" disabled><span class="web__title">Schůzka s&nbsp;truhlářem</span><span class="web__meta">Dnes</span></button></li>
+                <li><button class="web__node" type="button" data-node="n2" data-links="t4 f2" data-kind="poznamka" disabled><span class="web__title">Rozpočet rekonstrukce</span><span class="web__meta">2. 10.</span></button></li>
+                <li><button class="web__node" type="button" data-node="n3" data-links="t3 f3" data-kind="poznamka" disabled><span class="web__title">Inspirace na obklad</span><span class="web__meta">28. 9.</span></button></li>
+              </ul>
+            </div>
+            <div class="web__column">
+              <h3 class="web__heading"><svg class="icon icon--small" aria-hidden="true"><use href="#i-task"/></svg>Úkoly</h3>
+              <ul class="web__list">
+                <li><button class="web__node" type="button" data-node="t1" data-links="n1 f1" data-kind="ukol" disabled><span class="web__title">Poslat truhláři rozměry niky</span><span class="web__meta">Pá</span></button></li>
+                <li><button class="web__node" type="button" data-node="t2" data-links="n1 f1" data-kind="ukol" disabled><span class="web__title">Domluvit elektrikáře</span><span class="web__meta">Čt</span></button></li>
+                <li><button class="web__node" type="button" data-node="t3" data-links="n3 f3" data-kind="ukol" disabled><span class="web__title">Vybrat obklad za linku</span><span class="web__meta">So</span></button></li>
+                <li><button class="web__node" type="button" data-node="t4" data-links="n2 f2" data-kind="ukol" disabled><span class="web__title">Rozhodnout o&nbsp;digestoři</span><span class="web__meta">Bez termínu</span></button></li>
+              </ul>
+            </div>
+            <div class="web__column">
+              <h3 class="web__heading"><svg class="icon icon--small" aria-hidden="true"><use href="#i-file"/></svg>Podklady</h3>
+              <ul class="web__list">
+                <li><button class="web__node" type="button" data-node="f1" data-links="n1 t1 t2" data-kind="podklad" disabled><span class="web__title">Půdorys kuchyně.pdf</span><span class="web__meta">PDF · 1,2 MB</span></button></li>
+                <li><button class="web__node" type="button" data-node="f2" data-links="n2 t4" data-kind="podklad" disabled><span class="web__title">Nabídky na linku.pdf</span><span class="web__meta">PDF · 840 kB</span></button></li>
+                <li><button class="web__node" type="button" data-node="f3" data-links="n3 t3" data-kind="podklad" disabled><span class="web__title">Vzorník obkladů</span><span class="web__meta">Odkaz</span></button></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="web__status" data-web-status aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filozofie -->
+    <section class="section philosophy" id="filozofie" aria-labelledby="filozofie-title" data-section="filozofie">
+      <div class="container">
+        <div class="philosophy__head" data-reveal>
+          <p class="eyebrow">Filozofie</p>
+          <h2 class="philosophy__title" id="filozofie-title">Software by&nbsp;ti&nbsp;měl uvolnit hlavu.</h2>
+        </div>
+
+        <div class="philosophy__grid">
+          <div class="philosophy__intro" data-reveal>
+            <p class="lead">Většina aplikací o&nbsp;tvou pozornost soupeří. Vimmi ti ji chce vracet. Pomůže ti soustředit se na to, na čem záleží, a&nbsp;pak ustoupí stranou.</p>
+            <p class="philosophy__motto">Méně chaosu.<br>Více prostoru pro to důležité.</p>
+          </div>
+
+          <ol class="principles" data-reveal>
+            <li class="principle">
+              <h3 class="principle__title">Jednoduchost</h3>
+              <p>Každá funkce si své místo musí zasloužit. Co nepomáhá, do Vimmi nepatří.</p>
+            </li>
+            <li class="principle">
+              <h3 class="principle__title">Klid</h3>
+              <p>Žádné červené odznaky ani upozornění, která tě tahají zpátky. Vimmi počká, až ho budeš potřebovat.</p>
+            </li>
+            <li class="principle">
+              <h3 class="principle__title">Přehlednost</h3>
+              <p>Na první pohled vidíš, co je důležité. Zbytek zůstává v&nbsp;pozadí, dokud ho nebudeš hledat.</p>
+            </li>
+            <li class="principle">
+              <h3 class="principle__title">Péče o&nbsp;detail</h3>
+              <p>Rychlost, typografie a&nbsp;chování v&nbsp;drobnostech. Právě tam se pozná software, který je radost používat.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Otázky -->
+    <section class="section faq" id="otazky" aria-labelledby="otazky-title" data-section="otazky">
+      <div class="container faq__grid">
+        <div class="faq__intro" data-reveal>
+          <p class="eyebrow">Otázky</p>
+          <h2 class="section-title" id="otazky-title">Časté otázky</h2>
+          <p>Chybí ti tu odpověď? Vývoj Vimmi probíhá otevřeně na <a class="text-link" href="https://github.com/gerchanisko/vimmi">GitHubu</a>.</p>
+        </div>
+
+        <div class="faq__list" data-reveal>
+          <details class="faq__item" name="faq">
+            <summary>Co je Vimmi?</summary>
+            <div class="faq__answer">
+              <p>Osobní pracovní prostor pro poznámky, úkoly a&nbsp;projekty. Místo několika oddělených aplikací máš jedno klidné místo, kde je každá věc propojená s&nbsp;tím, k&nbsp;čemu patří.</p>
+            </div>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary>Můžu Vimmi už používat?</summary>
+            <div class="faq__answer">
+              <p>Zatím ne. Vimmi je ve vývoji a&nbsp;tahle stránka ukazuje, kam směřuje. Rozhraní, které tu vidíš, jsou ukázky návrhu, ne hotová aplikace. Jak práce postupuje, můžeš sledovat na <a class="text-link" href="https://github.com/gerchanisko/vimmi">GitHubu</a>.</p>
+            </div>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary>Pro koho je Vimmi určené?</summary>
+            <div class="faq__answer">
+              <p>Pro každého, kdo má hlavu plnou věcí a&nbsp;nechce je mít rozházené po pěti aplikacích. Pro studenty, tvůrce, nezávislé profesionály i&nbsp;pro ty, kdo si chtějí udělat pořádek v&nbsp;osobních projektech.</p>
+            </div>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary>Bude Vimmi používat umělou inteligenci?</summary>
+            <div class="faq__answer">
+              <p>Volitelně. Chystáme asistenta, který pomůže se shrnutím, hledáním a&nbsp;souvislostmi. Zatím ale není hotový a&nbsp;nebude jádrem aplikace. Vimmi musí být užitečné i&nbsp;bez něj a&nbsp;asistent bez tvého svolení nic neudělá.</p>
+            </div>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary>Jak to bude s&nbsp;mými daty?</summary>
+            <div class="faq__answer">
+              <p>Soukromí je jedna ze zásad, na kterých Vimmi stavíme. Tvoje poznámky a&nbsp;úkoly patří tobě. Konkrétní podrobnosti o&nbsp;ukládání a&nbsp;exportu dat zveřejníme, jakmile bude jasná podoba první verze.</p>
+            </div>
+          </details>
+          <details class="faq__item" name="faq">
+            <summary>Kolik bude Vimmi stát?</summary>
+            <div class="faq__answer">
+              <p>Cena zatím není stanovená. Jakmile ji budeme znát, najdeš ji právě tady.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Výzva k akci -->
+    <section class="section cta" id="zacit" aria-labelledby="zacit-title">
+      <div class="container cta__inner" data-reveal>
+        <svg class="cta__mark" aria-hidden="true"><use href="#vimmi-mark"/></svg>
+        <h2 class="section-title cta__title" id="zacit-title">Udělej si prostor pro důležité věci.</h2>
+        <p class="lead">Začni s&nbsp;jednodušším způsobem, jak organizovat své myšlenky, úkoly a&nbsp;projekty.</p>
+        <div class="actions actions--center">
+          <a class="button button--primary" href="https://github.com/gerchanisko/vimmi">
+            Objevit Vimmi
+            <svg class="icon icon--small" aria-hidden="true"><use href="#i-external"/></svg>
+          </a>
+        </div>
+        <p class="cta__note">Vimmi je zatím ve vývoji. Na GitHubu můžeš sledovat, jak vzniká.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__top">
+        <div class="site-footer__brand">
+          <a class="brand" href="#top" aria-label="Vimmi, zpět na začátek stránky">
+            <svg class="brand__mark" aria-hidden="true"><use href="#vimmi-mark"/></svg>
+            <span class="brand__name">Vimmi</span>
+          </a>
+          <p>Klidný osobní pracovní prostor pro poznámky, úkoly a&nbsp;projekty.</p>
+          <p class="site-footer__motto">Méně chaosu. Více prostoru pro to důležité.</p>
+        </div>
+
+        <nav class="site-footer__nav" aria-label="Odkazy v patičce">
+          <div>
+            <p class="site-footer__heading">Produkt</p>
+            <ul>
+              <li><a href="#funkce">Přehled</a></li>
+              <li><a href="#poznamky">Poznámky</a></li>
+              <li><a href="#ukoly">Úkoly a&nbsp;projekty</a></li>
+              <li><a href="#hledani">Hledání</a></li>
+              <li><a href="#propojeni">Jeden prostor</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="site-footer__heading">Vimmi</p>
+            <ul>
+              <li><a href="#filozofie">Filozofie</a></li>
+              <li><a href="#otazky">Otázky</a></li>
+              <li>
+                <a href="https://github.com/gerchanisko/vimmi" class="site-footer__external">
+                  <svg class="icon icon--small" aria-hidden="true"><use href="#i-github"/></svg>
+                  GitHub
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="site-footer__bottom">
+        <p>© 2026 Vimmi</p>
+        <a class="site-footer__top-link" href="#top">Zpět nahoru</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
