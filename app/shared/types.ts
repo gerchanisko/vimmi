@@ -1,4 +1,5 @@
 // Types shared by the Electron main process and the renderer.
+import type { ProviderId } from "./providers";
 
 export type Priority = 1 | 2 | 3;
 
@@ -76,7 +77,12 @@ export interface Settings {
   vaultPath?: string;
   recentVaults: string[];
   theme: "system" | "light" | "dark";
-  model: ModelId;
+  /** Active AI provider. */
+  provider: ProviderId;
+  /** Chosen model per provider (empty = provider default). */
+  models: Partial<Record<ProviderId, string>>;
+  /** Server address for providers where it can be changed (Ollama, custom, OpenCode). */
+  baseUrls: Partial<Record<ProviderId, string>>;
   effort: Effort;
   quickEffort: Effort;
   approvalMode: ApprovalMode;
@@ -91,13 +97,18 @@ export interface Settings {
   vimMode: boolean;
   livePreview: boolean;
   customInstructions: string;
+  /** Derived: the active provider has a key (or needs none). */
   hasApiKey: boolean;
+  /** Derived: which providers have a stored key. */
+  keys: Partial<Record<ProviderId, boolean>>;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   recentVaults: [],
   theme: "system",
-  model: "claude-sonnet-5-5",
+  provider: "anthropic",
+  models: {},
+  baseUrls: {},
   effort: "medium",
   quickEffort: "low",
   approvalMode: "ask",
@@ -113,6 +124,7 @@ export const DEFAULT_SETTINGS: Settings = {
   livePreview: true,
   customInstructions: "",
   hasApiKey: false,
+  keys: {},
 };
 
 // ---- AI chat ----
@@ -141,7 +153,7 @@ export type AiEvent =
     }
   | { type: "tool_result"; convId: string; id: string; ok: boolean; result: string }
   | { type: "web_search"; convId: string; query: string }
-  | { type: "usage"; convId: string; input: number; output: number; cacheRead: number; costUsd: number }
+  | { type: "usage"; convId: string; input: number; output: number; cacheRead: number; costUsd: number | null }
   | { type: "notice"; convId: string; message: string }
   | { type: "error"; convId: string; message: string }
   | { type: "done"; convId: string; stopReason: string | null };

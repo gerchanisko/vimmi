@@ -1,6 +1,7 @@
-// The AI assistant panel: chat with Claude, tool activity, approvals for changes.
+// The AI assistant panel: chat with the chosen AI provider, tool activity, approvals for changes.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { basename } from "../../shared/markdown";
+import { PROVIDER_MAP, PROVIDERS, providerModel } from "../../shared/providers";
 import type { AiEvent, Chat, ChatMessage, ChatPart, ChatSummary } from "../../shared/types";
 import { collapseDiff, lineDiff } from "../lib/diff";
 import { renderMarkdown } from "../lib/render";
@@ -133,7 +134,7 @@ export default function AiChat() {
     return window.vimmi.ai.onEvent((e) => {
       if (!chatRef.current || e.convId !== chatRef.current.id) return;
       if (e.type === "usage") {
-        setUsage((u) => ({ tokens: u.tokens + e.input + e.output, cost: u.cost + e.costUsd }));
+        setUsage((u) => ({ tokens: u.tokens + e.input + e.output, cost: u.cost + (e.costUsd ?? 0) }));
         return;
       }
       if (e.type === "done" || e.type === "error") {
@@ -233,22 +234,38 @@ export default function AiChat() {
   };
 
   if (!settings?.hasApiKey) {
+    const info = PROVIDER_MAP[settings?.provider ?? "anthropic"];
     return (
       <div className="ai-setup">
         <Icon name="sparkle" size={28} />
-        <h3>AI asistent Claude</h3>
+        <h3>AI asistent</h3>
         <p className="muted">
           Asistent umí číst tvoje poznámky, hledat souvislosti, shrnovat, plánovat a s tvým svolením i upravovat a vytvářet poznámky a úkoly.
         </p>
+        <p className="muted">
+          Vyber si poskytovatele: Claude, OpenAI, Gemini, bezplatné modely z OpenCode Zen nebo OpenRouteru, nebo model běžící lokálně v Ollamě.
+          Teď je vybraný <strong>{info.name}</strong> a chybí mu API klíč.
+        </p>
         <button className="btn primary" onClick={() => setState({ overlay: { type: "settings", tab: "ai" } })}>
-          <Icon name="key" /> Vložit API klíč
+          <Icon name="key" /> Nastavit AI
         </button>
-        <p className="muted small">Klíč získáš na platform.claude.com → API Keys.</p>
       </div>
     );
   }
 
-  const modelName = settings.model.replace("claude-", "").replace(/-(\d)-(\d)$/, " $1.$2").replace(/^\w/, (c) => c.toUpperCase());
+  const model = providerModel(settings.provider, settings.models);
+  const switchProvider = (e: React.MouseEvent) =>
+    openMenu((e.currentTarget as HTMLElement).getBoundingClientRect(), [
+      { heading: "Poskytovatel AI" },
+      ...PROVIDERS.filter((p) => settings.keys[p.id] || !p.needsKey).map((p) => ({
+        label: `${p.name}${providerModel(p.id, settings.models) ? ` · ${providerModel(p.id, settings.models)}` : ""}`,
+        icon: p.id === settings.provider ? "check" : p.free ? "sparkle" : "bot",
+        action: () =>
+          void window.vimmi.settings.set({ provider: p.id }).then((next) => setState({ settings: { ...settings, ...next } })),
+      })),
+      { separator: true },
+      { label: "Nastavení AI…", icon: "settings", action: () => setState({ overlay: { type: "settings", tab: "ai" } }) },
+    ]);
 
   return (
     <div className="ai-chat">
@@ -272,7 +289,7 @@ export default function AiChat() {
       >
         {!chat?.messages.length && (
           <div className="chat-empty">
-            <p className="muted">Zeptej se na cokoliv o svých poznámkách. Claude vidí otevřenou poznámku a umí prohledat celý trezor.</p>
+            <p className="muted">Zeptej se na cokoliv o svých poznámkách. AI vidí otevřenou poznámku a umí prohledat celý trezor.</p>
             <div className="suggestions">
               {SUGGESTIONS.filter((s) => !s.needsNote || activePath).map((s) => (
                 <button key={s.text} className="suggestion" onClick={() => void send(s.text)}>
@@ -310,10 +327,12 @@ export default function AiChat() {
           }}
         />
         <div className="chat-input-row">
-          <span className="muted small" title="Model a úroveň úsilí lze změnit v Nastavení → AI">
-            {modelName} · {settings.effort}
-            {usage.tokens > 0 && ` · ${(usage.tokens / 1000).toFixed(1)}k tokenů · ~$${usage.cost.toFixed(3)}`}
-          </span>
+          <button className="model-switch muted small" onClick={switchProvider} title="Přepnout poskytovatele AI">
+            {PROVIDER_MAP[settings.provider].name.split(" (")[0]} · {model || "vyber model"}
+            {usage.tokens > 0 && ` · ${(usage.tokens / 1000).toFixed(1)}k tokenů`}
+            {usage.cost > 0 && ` · ~$${usage.cost.toFixed(3)}`}
+            <Icon name="chevron-down" size={12} />
+          </button>
           {busy ? (
             <button className="btn" onClick={() => chat && void window.vimmi.ai.stop(chat.id)}>
               <Icon name="stop" size={14} /> Zastavit
@@ -359,7 +378,7 @@ function Message({
         <Part key={i} part={p} showThinking={showThinking} />
       ))}
       {working && (!lastPart || lastPart.kind !== "text" || lastPart.closed) && (
-        <p className="muted thinking-dots">{lastPart?.kind === "tool" && lastPart.status === "waiting" ? "Čeká na tvoje schválení" : "Claude pracuje"}</p>
+        <p className="muted thinking-dots">{lastPart?.kind === "tool" && lastPart.status === "waiting" ? "Čeká na tvoje schválení" : "AI pracuje"}</p>
       )}
     </div>
   );

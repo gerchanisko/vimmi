@@ -46,6 +46,70 @@ function message(blocks, stop) {
   ev.push({ type: "message_stop" });
   return ev;
 }
+// --- OpenAI-compatible Chat Completions mock (Gemini, OpenRouter, Ollama, custom) ---
+const chatRequests = [];
+function chatCompletions(json, res) {
+  chatRequests.push(json);
+  res.writeHead(200, { "content-type": "text/event-stream" });
+  const chunk = (delta, finish = null) =>
+    res.write(`data: ${JSON.stringify({ id: "c1", object: "chat.completion.chunk", created: 1, model: json.model, choices: [{ index: 0, delta, finish_reason: finish }] })}\n\n`);
+  const last = json.messages.at(-1);
+  if (!json.tools) {
+    chunk({ role: "assistant", content: "**Shrnutí (compat):** krátké." });
+    chunk({}, "stop");
+  } else if (last.role === "user") {
+    chunk({ role: "assistant", reasoning_content: "Přidám úkol." });
+    chunk({ content: "Přidám úkol do cest." });
+    chunk({ tool_calls: [{ index: 0, id: "call_a", type: "function", function: { name: "add_task", arguments: "" } }] });
+    chunk({ tool_calls: [{ index: 0, function: { arguments: '{"text":"Koupit mapu Krkonoš",' } }] });
+    chunk({ tool_calls: [{ index: 0, function: { arguments: '"note":"Cesty","priority":2}' } }] });
+    chunk({}, "tool_calls");
+  } else {
+    chunk({ role: "assistant", content: "Hotovo (compat) – úkol je v [[Cesty]]." });
+    chunk({}, "stop");
+  }
+  res.write(`data: ${JSON.stringify({ id: "c1", object: "chat.completion.chunk", created: 1, model: json.model, choices: [], usage: { prompt_tokens: 500, completion_tokens: 40, total_tokens: 540 } })}\n\n`);
+  res.write("data: [DONE]\n\n");
+  res.end();
+}
+
+// --- OpenAI Responses API mock ---
+const responsesRequests = [];
+function responses(json, res) {
+  responsesRequests.push(json);
+  res.writeHead(200, { "content-type": "text/event-stream" });
+  let seq = 0;
+  const ev = (e) => res.write(`event: ${e.type}\ndata: ${JSON.stringify({ ...e, sequence_number: seq++ })}\n\n`);
+  const base = { id: "resp_1", object: "response", created_at: 1, model: json.model, status: "in_progress", output: [], tools: [], parallel_tool_calls: true, tool_choice: "auto", error: null, incomplete_details: null, instructions: null, metadata: {}, temperature: 1, top_p: 1 };
+  ev({ type: "response.created", response: base });
+  const input = Array.isArray(json.input) ? json.input : [];
+  const hasResult = input.some((i) => i.type === "function_call_output");
+  let output;
+  if (!json.tools) {
+    output = [{ type: "message", id: "m1", role: "assistant", status: "completed", content: [{ type: "output_text", text: "**Shrnutí (OpenAI):** krátké.", annotations: [] }] }];
+  } else if (!hasResult) {
+    output = [{ type: "function_call", id: "fc1", call_id: "call_r1", name: "create_note", arguments: JSON.stringify({ path: "Nápady/Z OpenAI.md", content: "# Z OpenAI\n\nVytvořeno přes Responses API." }), status: "completed" }];
+  } else {
+    output = [{ type: "message", id: "m2", role: "assistant", status: "completed", content: [{ type: "output_text", text: "Vytvořil jsem [[Z OpenAI]].", annotations: [] }] }];
+  }
+  output.forEach((item, i) => {
+    if (item.type === "message") {
+      ev({ type: "response.output_item.added", output_index: i, item: { ...item, content: [], status: "in_progress" } });
+      ev({ type: "response.content_part.added", output_index: i, item_id: item.id, content_index: 0, part: { type: "output_text", text: "", annotations: [] } });
+      ev({ type: "response.output_text.delta", output_index: i, item_id: item.id, content_index: 0, delta: item.content[0].text, logprobs: [] });
+      ev({ type: "response.output_text.done", output_index: i, item_id: item.id, content_index: 0, text: item.content[0].text, logprobs: [] });
+      ev({ type: "response.content_part.done", output_index: i, item_id: item.id, content_index: 0, part: item.content[0] });
+    } else {
+      ev({ type: "response.output_item.added", output_index: i, item: { ...item, arguments: "", status: "in_progress" } });
+      ev({ type: "response.function_call_arguments.delta", output_index: i, item_id: item.id, delta: item.arguments });
+      ev({ type: "response.function_call_arguments.done", output_index: i, item_id: item.id, arguments: item.arguments, name: item.name });
+    }
+    ev({ type: "response.output_item.done", output_index: i, item });
+  });
+  ev({ type: "response.completed", response: { ...base, status: "completed", output, usage: { input_tokens: 800, output_tokens: 60, total_tokens: 860, input_tokens_details: { cached_tokens: 0 }, output_tokens_details: { reasoning_tokens: 0 } } } });
+  res.end();
+}
+
 const server = http.createServer((req, res) => {
   let body = "";
   req.on("data", (c) => (body += c));
@@ -55,7 +119,14 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({ id: "claude-sonnet-5-5", display_name: "Claude Sonnet 5.5", type: "model", created_at: "2026-01-01T00:00:00Z" }));
       return;
     }
+    if (req.method === "GET" && req.url === "/v1/models") {
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ object: "list", data: [{ id: "mock-model", object: "model" }, { id: "mock-free:free", object: "model" }] }));
+      return;
+    }
     const json = JSON.parse(body || "{}");
+    if (req.url === "/v1/chat/completions") return chatCompletions(json, res);
+    if (req.url === "/v1/responses") return responses(json, res);
     requests.push(json);
     if (!json.tools) {
       sse(res, message([{ type: "text", text: "**Shrnutí:** Poznámka popisuje, jak Vimmi funguje." }], "end_turn"));
@@ -88,7 +159,14 @@ if (sampleNotes) {
 
 const app = await electron.launch({
   args: ["."],
-  env: { ...process.env, VIMMI_USER_DATA: userData, ANTHROPIC_API_KEY: "sk-ant-test", ANTHROPIC_BASE_URL: apiUrl },
+  env: {
+    ...process.env,
+    VIMMI_USER_DATA: userData,
+    ANTHROPIC_API_KEY: "sk-ant-test",
+    ANTHROPIC_BASE_URL: apiUrl,
+    OPENAI_API_KEY: "sk-openai-test",
+    VIMMI_OPENAI_BASE_URL: `${apiUrl}/v1`,
+  },
 });
 const page = await app.firstWindow();
 await page.setViewportSize?.({ width: 1360, height: 860 }).catch(() => {});
@@ -219,11 +297,55 @@ try {
   await step("settings → AI", async () => {
     await page.keyboard.press("Control+,");
     await page.click(".settings-nav >> text=AI");
-    await page.waitForSelector(".model-list");
-    await page.click("text=Otestovat");
+    await page.waitForSelector(".provider-grid");
+    await page.click("text=Otestovat spojení");
     await page.waitForSelector("text=Klíč funguje");
     await shot("13-settings-ai");
     await page.keyboard.press("Escape");
+  });
+
+  await step("custom OpenAI-compatible provider: tools + approval", async () => {
+    await page.keyboard.press("Control+,");
+    await page.click(".settings-nav >> text=AI");
+    await page.click(".provider-card >> text=Vlastní");
+    await page.fill(".provider-settings .url-input >> nth=0", `${apiUrl}/v1`);
+    await page.click(".provider-settings >> text=Načíst modely");
+    await page.click(".model-row >> text=mock-model");
+    await page.waitForTimeout(200);
+    await shot("15-provider-settings");
+    await page.keyboard.press("Escape");
+    await page.click(".ai-chat button[title='Nový chat']");
+    await page.fill(".chat-input textarea", "Přidej úkol koupit mapu");
+    await page.keyboard.press("Enter");
+    await page.waitForSelector(".approval", { timeout: 10000 });
+    await page.click(".approval >> text=Povolit");
+    await page.waitForSelector("text=Hotovo (compat)", { timeout: 10000 });
+    await shot("16-custom-provider-chat");
+    if (!/- \[ \] Koupit mapu Krkonoš !2/.test(read("Cesty.md"))) throw new Error("compat tool not applied");
+    const req = chatRequests.find((r) => r.tools);
+    if (req.model !== "mock-model" || req.messages[0].role !== "system") throw new Error("bad compat request");
+    if (!chatRequests.some((r) => r.messages.some((m) => m.role === "tool"))) throw new Error("tool result not sent back");
+  });
+
+  await step("OpenAI provider (Responses API): tools + approval + quick action", async () => {
+    await page.click(".model-switch");
+    await page.click(".menu >> text=OpenAI");
+    await page.waitForTimeout(200);
+    await page.click(".ai-chat button[title='Nový chat']");
+    await page.fill(".chat-input textarea", "Vytvoř poznámku z OpenAI");
+    await page.keyboard.press("Enter");
+    await page.waitForSelector(".approval", { timeout: 10000 });
+    await page.click(".approval >> text=Povolit");
+    await page.waitForSelector("text=Vytvořil jsem", { timeout: 10000 });
+    await shot("17-openai-chat");
+    if (!read("Nápady/Z OpenAI.md").includes("Responses API")) throw new Error("responses tool not applied");
+    const req = responsesRequests.find((r) => r.tools);
+    if (req.model !== "gpt-6.1-sol" || req.store !== false) throw new Error(`bad responses request ${req.model}`);
+    if (!responsesRequests.some((r) => Array.isArray(r.input) && r.input.some((i) => i.type === "function_call_output"))) throw new Error("function output not sent");
+    await page.locator(".tab-pane:not([hidden]) .note-actions .ai-btn").click();
+    await page.click(".menu >> text=Shrnout");
+    await page.waitForSelector(".quick-panel >> text=Shrnutí (OpenAI)", { timeout: 10000 });
+    await page.click(".quick-panel >> text=Zahodit");
   });
 
   await step("dark theme", async () => {

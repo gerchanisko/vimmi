@@ -33,15 +33,25 @@ Poznámky jsou obyčejné soubory Markdown ve složce (trezoru), takže jsou vž
 - Umí vytvářet a upravovat poznámky, přidávat a odškrtávat úkoly, přejmenovávat a mazat. **Každou změnu nejdřív ukáže jako rozdíl a čeká na schválení** (dá se vypnout)
 - Rychlé akce nad výběrem nebo celou poznámkou: shrnout, vylepšit, opravit pravopis, zkrátit, rozvést, pokračovat v psaní, vytáhnout úkoly, osnova, vysvětlit, přeložit, navrhnout název a tagy, vlastní pokyn
 - Volitelné hledání na webu, zobrazení přemýšlení, vlastní pokyny, historie chatů (ukládá se v `.vimmi/chats` v trezoru), odhad ceny
-- Modely Claude Sonnet 5.5 (výchozí), Opus 5.5 a Haiku 5.5; volitelná úroveň úsilí
+- Výběr poskytovatele AI (viz níže), rychlé přepnutí přímo v chatu, načtení aktuálního seznamu modelů
 
-## AI: jak to funguje
+## AI: poskytovatelé
 
-- API klíč vložíš v **Nastavení → AI** (získáš ho na [platform.claude.com](https://platform.claude.com)). Uloží se zašifrovaně přes systémovou klíčenku (Electron `safeStorage`) a nikdy se nedostane do okna aplikace. Volání API probíhá jen v hlavním procesu.
-- Pro vývoj stačí nastavit proměnnou `ANTHROPIC_API_KEY`.
-- Používá se oficiální SDK `@anthropic-ai/sdk`, streamování, adaptivní přemýšlení, prompt caching a serverový fallback při odmítnutí (`fallbacks: "default"`).
-- Nástroje AI jsou v [`electron/ai/tools.ts`](electron/ai/tools.ts). Nový nástroj přidáš jedním záznamem `def({...})` se schématem v Zodu. U zapisujících nástrojů nastavíš `write: true` a `preview`, aby šly schválit.
-- Poznámky se posílají Anthropicu jen tehdy, když AI použiješ.
+| Poskytovatel | API | Poznámka |
+| --- | --- | --- |
+| **Claude (Anthropic)** | Anthropic SDK, Messages API | Výchozí, Claude Sonnet 5.5. Přemýšlení, hledání na webu, prompt caching, záložní model při odmítnutí (`fallbacks: "default"`). |
+| **OpenAI** | OpenAI SDK, Responses API | GPT-6.x. Nástroje, přemýšlení, hledání na webu; bezstavově (`store: false`). |
+| **Google Gemini** | OpenAI-kompatibilní endpoint | Flash modely mají bezplatnou úroveň. Klíč z Google AI Studia. |
+| **OpenCode Zen** | OpenAI-kompatibilní | Bezplatné modely na omezenou dobu (Big Pickle, Nemotron, MiMo…). Klíč z konzole OpenCode. |
+| **OpenRouter** | OpenAI-kompatibilní | Stovky modelů, modely `:free` zdarma (s limity). |
+| **Ollama** | OpenAI-kompatibilní, lokálně | Zdarma, poznámky neopustí počítač. Model musí podporovat nástroje (tools). |
+| **Vlastní** | OpenAI Chat Completions | LM Studio, vLLM, Groq, Mistral, DeepSeek… s vlastní adresou serveru. |
+
+- Klíče se zadávají v **Nastavení → AI**, každý poskytovatel má vlastní. Ukládají se zašifrovaně přes systémovou klíčenku (Electron `safeStorage`) a nikdy se nedostanou do okna aplikace; všechna volání API probíhají v hlavním procesu.
+- Pro vývoj fungují proměnné `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `OPENCODE_API_KEY`, `OPENROUTER_API_KEY` a `VIMMI_<POSKYTOVATEL>_BASE_URL` pro jiný server.
+- Názvy modelů se často mění, proto tlačítko **Načíst modely** stáhne aktuální seznam přímo od poskytovatele.
+- Nástroje AI jsou v [`electron/ai/tools.ts`](electron/ai/tools.ts) a sdílí je všichni poskytovatelé. Nový nástroj přidáš jedním záznamem `def({...})` se schématem v Zodu; u zapisujících nastavíš `write: true` a `preview`, aby šly schválit.
+- Smyčky: Claude v [`electron/ai/agent.ts`](electron/ai/agent.ts), ostatní v [`electron/ai/openai-loops.ts`](electron/ai/openai-loops.ts). Když v rozběhnutém chatu změníš poskytovatele, konverzace se převezme jako text.
 
 ## Vývoj
 
@@ -53,7 +63,7 @@ npm install
 npm run dev        # vývojový režim s automatickým načítáním
 npm start          # sestaví a spustí aplikaci
 npm test           # unit testy (parser, trezor, AI nástroje)
-npm run smoke      # end-to-end test: spustí aplikaci, proklikne funkce, AI proti mock serveru
+npm run smoke      # end-to-end test: spustí aplikaci, proklikne funkce, AI (Claude, OpenAI, kompatibilní) proti mock serverům
 npm run dist       # AppImage pro Linux do release/
 ```
 
@@ -64,7 +74,9 @@ electron/main.ts        hlavní proces: okno, IPC, otevírání trezoru, deník,
 electron/preload.ts     bezpečné API pro okno (window.vimmi)
 electron/vault.ts       trezor v paměti + sledování disku, hledání, přejmenování s opravou odkazů
 electron/settings.ts    nastavení a zašifrovaný API klíč
-electron/ai/agent.ts    Claude: chat s nástroji, schvalování změn, rychlé akce, historie
+electron/ai/agent.ts    AI chat s nástroji, schvalování změn, rychlé akce, historie; smyčka pro Claude
+electron/ai/openai-loops.ts  smyčky pro OpenAI (Responses) a OpenAI-kompatibilní servery
+shared/providers.ts     seznam poskytovatelů, výchozí modely, adresy
 electron/ai/tools.ts    nástroje pro práci s trezorem
 shared/                 parser Markdownu (odkazy, tagy, úkoly) a sdílené typy
 src/                    rozhraní v Reactu (CodeMirror 6, markdown-it, d3-force)

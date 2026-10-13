@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import type { Effort, ModelId, Settings as S } from "../../shared/types";
+import { PROVIDER_MAP, PROVIDERS, providerBaseUrl, providerModel, type ProviderId } from "../../shared/providers";
+import type { Effort, Settings as S } from "../../shared/types";
 import { switchVault } from "../lib/actions";
 import { COMMANDS } from "../lib/commands";
 import { errorText, setState, toast, useApp } from "../lib/store";
@@ -11,12 +12,6 @@ const TABS = [
   { id: "ai", label: "AI", icon: "sparkle" },
   { id: "keys", label: "Zkratky", icon: "command" },
   { id: "about", label: "O aplikaci", icon: "info" },
-];
-
-const MODELS: { id: ModelId; name: string; note: string }[] = [
-  { id: "claude-sonnet-5-5", name: "Claude Sonnet 5.5", note: "Doporučeno · rychlý a chytrý · $2 / $10 za milion tokenů" },
-  { id: "claude-opus-5-5", name: "Claude Opus 5.5", note: "Nejschopnější na složité úkoly · $4 / $20" },
-  { id: "claude-haiku-5-5", name: "Claude Haiku 5.5", note: "Nejrychlejší a nejlevnější · $0.10 / $0.50" },
 ];
 
 const EFFORTS: { id: Effort; label: string }[] = [
@@ -31,9 +26,6 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
   const settings = useApp((s) => s.settings)!;
   const snapshot = useApp((s) => s.snapshot);
   const [tab, setTab] = useState(initialTab ?? "general");
-  const [key, setKey] = useState("");
-  const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<{ ok: boolean; message: string } | null>(null);
   const [version, setVersion] = useState("");
   const close = () => setState({ overlay: null });
 
@@ -51,33 +43,6 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
     } catch (err) {
       toast(errorText(err), "error");
     }
-  };
-
-  const saveKey = async () => {
-    const k = key.trim();
-    if (!k) return;
-    if (!k.startsWith("sk-ant-")) {
-      setTestResult({ ok: false, message: "Klíč by měl začínat „sk-ant-“. Zkontroluj, že jsi zkopíroval celý." });
-      return;
-    }
-    const next = await window.vimmi.settings.setKey(k);
-    setState({ settings: { ...settings, ...next } });
-    setKey("");
-    await test();
-  };
-
-  const test = async () => {
-    setTesting(true);
-    setTestResult(null);
-    const r = await window.vimmi.settings.testKey(settings.model);
-    setTestResult(r);
-    setTesting(false);
-  };
-
-  const removeKey = async () => {
-    const next = await window.vimmi.settings.setKey(null);
-    setState({ settings: { ...settings, ...next } });
-    setTestResult(null);
   };
 
   return (
@@ -171,56 +136,38 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
             <>
               <h3>AI asistent</h3>
               <p className="muted">
-                Vimmi používá Claude od Anthropicu přes tvůj vlastní API klíč. Platíš jen to, co spotřebuješ, přímo Anthropicu. Poznámky se posílají jen
-                tehdy, když AI použiješ.
+                Vyber, který model má Vimmi používat. Platíš poskytovateli přímo podle spotřeby, bezplatné možnosti jsou označené. Poznámky se posílají jen
+                tehdy, když AI použiješ – s Ollamou nikdy neopustí tvůj počítač.
               </p>
-              <Row label="API klíč" hint={settings.hasApiKey ? (settings.keyEncrypted ? "Uložen zašifrovaně v systémové klíčence." : "Uložen v souboru čitelném jen pro tebe.") : "Klíč získáš na platform.claude.com → API Keys."}>
-                {settings.hasApiKey ? (
-                  <div className="row-actions">
-                    <span className="pill ok">
-                      <Icon name="ok" size={13} /> Klíč je uložen
-                    </span>
-                    <button className="btn" onClick={() => void test()} disabled={testing}>
-                      {testing ? "Ověřuji…" : "Otestovat"}
-                    </button>
-                    <button className="btn ghost" onClick={() => void removeKey()}>
-                      Odebrat
-                    </button>
-                  </div>
-                ) : (
-                  <form
-                    className="row-actions"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      void saveKey();
-                    }}
-                  >
-                    <input type="password" className="key-input" placeholder="sk-ant-…" value={key} onChange={(e) => setKey(e.target.value)} autoFocus={initialTab === "ai"} />
-                    <button className="btn primary" type="submit" disabled={!key.trim()}>
-                      Uložit
-                    </button>
-                    <button type="button" className="btn ghost" onClick={() => void window.vimmi.app.openExternal("https://platform.claude.com/settings/keys")}>
-                      Získat klíč <Icon name="external" size={13} />
-                    </button>
-                  </form>
-                )}
-              </Row>
-              {testResult && <p className={testResult.ok ? "ok-text" : "error-text"}>{testResult.message}</p>}
-
-              <Row label="Model">
-                <div className="model-list">
-                  {MODELS.map((m) => (
-                    <label key={m.id} className={`model-option${settings.model === m.id ? " on" : ""}`}>
-                      <input type="radio" name="model" checked={settings.model === m.id} onChange={() => void update({ model: m.id })} />
-                      <span>
-                        <strong>{m.name}</strong>
-                        <span className="muted small">{m.note}</span>
+              <div className="provider-grid">
+                {PROVIDERS.map((p) => {
+                  const ready = settings.keys[p.id] || !p.needsKey;
+                  return (
+                    <button
+                      key={p.id}
+                      className={`provider-card${settings.provider === p.id ? " on" : ""}`}
+                      onClick={() => void update({ provider: p.id })}
+                      aria-pressed={settings.provider === p.id}
+                    >
+                      <strong>{p.name}</strong>
+                      <span className="provider-badges">
+                        {p.free && <span className="pill accent">zdarma</span>}
+                        {p.id === "ollama" && <span className="pill">lokálně</span>}
+                        {settings.keys[p.id] && (
+                          <span className="pill ok">
+                            <Icon name="ok" size={12} /> klíč
+                          </span>
+                        )}
+                        {!ready && <span className="pill">bez klíče</span>}
                       </span>
-                    </label>
-                  ))}
-                </div>
-              </Row>
-              <Row label="Úsilí v chatu" hint="Kolik Claude přemýšlí, než odpoví. Vyšší = kvalitnější, ale pomalejší a dražší.">
+                    </button>
+                  );
+                })}
+              </div>
+              <ProviderSettings key={settings.provider} provider={settings.provider} settings={settings} update={update} />
+
+              <h4 className="settings-sub">Chování</h4>
+              <Row label="Úsilí v chatu" hint="Kolik model přemýšlí, než odpoví. Vyšší = kvalitnější, ale pomalejší a dražší. (Claude a OpenAI)">
                 <select value={settings.effort} onChange={(e) => void update({ effort: e.target.value as Effort })}>
                   {EFFORTS.map((x) => (
                     <option key={x.id} value={x.id}>
@@ -250,12 +197,12 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
               </Row>
               <Toggle
                 label="Hledání na webu"
-                hint="Claude může vyhledávat a číst webové stránky (účtuje se zvlášť, ~$10 za 1000 hledání). Platí pro nové chaty."
+                hint="Jen Claude a OpenAI. Model může vyhledávat na webu (účtuje se zvlášť). Platí pro nové chaty."
                 checked={settings.webSearch}
                 onChange={(v) => void update({ webSearch: v })}
               />
-              <Toggle label="Zobrazovat přemýšlení" hint="Ukáže shrnutí toho, jak Claude o odpovědi uvažoval." checked={settings.showThinking} onChange={(v) => void update({ showThinking: v })} />
-              <Row label="Vlastní pokyny" hint="Co by měl Claude o tobě vědět nebo jak má odpovídat.">
+              <Toggle label="Zobrazovat přemýšlení" hint="Ukáže shrnutí toho, jak model o odpovědi uvažoval (pokud ho poskytovatel posílá)." checked={settings.showThinking} onChange={(v) => void update({ showThinking: v })} />
+              <Row label="Vlastní pokyny" hint="Co by měla AI o tobě vědět nebo jak má odpovídat.">
                 <TextArea value={settings.customInstructions} onSave={(v) => void update({ customInstructions: v })} />
               </Row>
             </>
@@ -321,6 +268,184 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ProviderSettings({
+  provider,
+  settings,
+  update,
+}: {
+  provider: ProviderId;
+  settings: S & { keyEncrypted?: boolean };
+  update: (patch: Partial<S>) => Promise<void>;
+}) {
+  const info = PROVIDER_MAP[provider];
+  const [key, setKey] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [models, setModels] = useState<string[] | null>(null);
+  const [onlyFree, setOnlyFree] = useState(provider === "openrouter");
+  const [modelValue, setModelValue] = useState(providerModel(provider, settings.models));
+  const [baseUrl, setBaseUrl] = useState(providerBaseUrl(provider, settings.baseUrls));
+  const hasKey = settings.keys[provider];
+
+  const test = async () => {
+    setBusy(true);
+    setResult(null);
+    setResult(await window.vimmi.settings.testKey(provider));
+    setBusy(false);
+  };
+  const saveKey = async () => {
+    const k = key.trim();
+    if (!k) return;
+    if (provider === "anthropic" && !k.startsWith("sk-ant-")) {
+      setResult({ ok: false, message: "Claude klíč by měl začínat „sk-ant-“. Zkontroluj, že jsi zkopíroval celý." });
+      return;
+    }
+    const next = await window.vimmi.settings.setKey(provider, k);
+    setState((s) => ({ settings: { ...s.settings!, ...next } }));
+    setKey("");
+    await test();
+  };
+  const removeKey = async () => {
+    const next = await window.vimmi.settings.setKey(provider, null);
+    setState((s) => ({ settings: { ...s.settings!, ...next } }));
+    setResult(null);
+  };
+  const loadModels = async () => {
+    setBusy(true);
+    try {
+      setModels(await window.vimmi.settings.models(provider));
+      setResult(null);
+    } catch (err) {
+      setResult({ ok: false, message: errorText(err) });
+    } finally {
+      setBusy(false);
+    }
+  };
+  const saveModel = (value: string) => {
+    setModelValue(value);
+    void update({ models: { ...settings.models, [provider]: value.trim() } });
+  };
+
+  const shown = (models ?? []).filter((m) => !onlyFree || m.endsWith(":free") || m.endsWith("-free") || m === "big-pickle");
+
+  return (
+    <div className="provider-settings">
+      <p className="muted">{info.note}</p>
+      {(info.needsKey || provider === "custom") && (
+        <Row
+          label="API klíč"
+          hint={
+            hasKey
+              ? settings.keyEncrypted
+                ? "Uložen zašifrovaně v systémové klíčence."
+                : "Uložen v souboru čitelném jen pro tebe."
+              : info.needsKey
+                ? `Proměnná prostředí ${info.keyEnv} má přednost.`
+                : "Volitelný – jen pokud ho server vyžaduje."
+          }
+        >
+          {hasKey ? (
+            <div className="row-actions">
+              <span className="pill ok">
+                <Icon name="ok" size={13} /> Klíč je uložen
+              </span>
+              <button className="btn ghost" onClick={() => void removeKey()}>
+                Odebrat
+              </button>
+            </div>
+          ) : (
+            <form
+              className="row-actions"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void saveKey();
+              }}
+            >
+              <input type="password" className="key-input" placeholder={provider === "anthropic" ? "sk-ant-…" : "API klíč"} value={key} onChange={(e) => setKey(e.target.value)} />
+              <button className="btn primary" type="submit" disabled={!key.trim()}>
+                Uložit
+              </button>
+              {info.keyUrl && (
+                <button type="button" className="btn ghost" onClick={() => void window.vimmi.app.openExternal(info.keyUrl!)}>
+                  Získat klíč <Icon name="external" size={13} />
+                </button>
+              )}
+            </form>
+          )}
+        </Row>
+      )}
+      {info.editableBaseUrl && (
+        <Row label="Adresa serveru" hint={info.baseURL ? `Výchozí: ${info.baseURL}` : "Např. http://localhost:1234/v1 (LM Studio)"}>
+          <input
+            className="url-input"
+            value={baseUrl}
+            placeholder={info.baseURL || "https://…/v1"}
+            onChange={(e) => setBaseUrl(e.target.value)}
+            onBlur={() => void update({ baseUrls: { ...settings.baseUrls, [provider]: baseUrl.trim() } })}
+          />
+        </Row>
+      )}
+      <Row label="Model" hint={models ? `${shown.length} z ${models.length} modelů` : "Napiš název, vyber z nabídky, nebo načti aktuální seznam."}>
+        <div className="model-picker">
+          <input
+            className="url-input"
+            list={`models-${provider}`}
+            value={modelValue}
+            placeholder={info.defaultModel || "název modelu"}
+            onChange={(e) => setModelValue(e.target.value)}
+            onBlur={() => modelValue !== providerModel(provider, settings.models) && saveModel(modelValue)}
+          />
+          <datalist id={`models-${provider}`}>
+            {info.suggested.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.label}
+              </option>
+            ))}
+            {shown.map((m) => (
+              <option key={m} value={m} />
+            ))}
+          </datalist>
+          <div className="row-actions">
+            <button className="btn" onClick={() => void loadModels()} disabled={busy}>
+              {busy ? "Načítám…" : "Načíst modely"}
+            </button>
+            <button className="btn" onClick={() => void test()} disabled={busy}>
+              Otestovat spojení
+            </button>
+          </div>
+          {info.suggested.length > 0 && (
+            <div className="model-suggestions">
+              {info.suggested.map((m) => (
+                <button key={m.id} className={`suggest-chip${modelValue === m.id ? " on" : ""}`} onClick={() => saveModel(m.id)} title={m.id}>
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {models && (
+            <>
+              {provider === "openrouter" && (
+                <label className="check">
+                  <input type="checkbox" checked={onlyFree} onChange={(e) => setOnlyFree(e.target.checked)} /> Jen bezplatné
+                </label>
+              )}
+              <div className="model-results">
+                {shown.slice(0, 200).map((m) => (
+                  <button key={m} className={`model-row${m === modelValue ? " on" : ""}`} onClick={() => saveModel(m)}>
+                    {m}
+                  </button>
+                ))}
+                {shown.length === 0 && <p className="muted small pad">Žádné modely.</p>}
+              </div>
+            </>
+          )}
+        </div>
+      </Row>
+      {result && <p className={result.ok ? "ok-text" : "error-text"}>{result.message}</p>}
     </div>
   );
 }

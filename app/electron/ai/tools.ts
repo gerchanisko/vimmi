@@ -348,16 +348,25 @@ export const TOOLS = [
 export type ToolName = (typeof TOOLS)[number]["name"];
 export const TOOL_MAP = Object.fromEntries(TOOLS.map((t) => [t.name, t])) as Record<string, ToolDef<z.ZodType>>;
 
-/** Tool definitions in the shape the Messages API expects. */
-export function toolDefinitions(): Anthropic.Beta.BetaToolUnion[] {
+/** Provider-neutral tool descriptions: name, description and JSON Schema parameters. */
+export function functionSchemas(): { name: string; description: string; parameters: Record<string, unknown> }[] {
   return TOOLS.map((t) => {
     const schema = z.toJSONSchema(t.schema, { target: "draft-7" }) as Record<string, unknown>;
     delete schema.$schema;
     return {
       name: t.name,
       description: t.description + (t.write ? " The user approves this change before it runs." : ""),
-      input_schema: schema as Anthropic.Beta.BetaTool.InputSchema,
-      eager_input_streaming: true,
+      parameters: schema,
     };
   });
+}
+
+/** Tool definitions in the shape the Claude Messages API expects. */
+export function toolDefinitions(): Anthropic.Beta.BetaToolUnion[] {
+  return functionSchemas().map((f) => ({
+    name: f.name,
+    description: f.description,
+    input_schema: f.parameters as Anthropic.Beta.BetaTool.InputSchema,
+    eager_input_streaming: true,
+  }));
 }

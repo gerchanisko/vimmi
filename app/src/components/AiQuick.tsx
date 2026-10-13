@@ -66,7 +66,7 @@ function subscribe() {
 export async function runQuick(action: QuickAction, label: string, instruction?: string, override?: { text: string; source: "selection" | "note" }) {
   subscribe();
   if (!getState().settings?.hasApiKey) {
-    toast("Nejdřív vlož Claude API klíč v Nastavení → AI.", "error");
+    toast("Nejdřív nastav AI poskytovatele a klíč v Nastavení → AI.", "error");
     setState({ overlay: { type: "settings", tab: "ai" } });
     return;
   }
@@ -114,7 +114,7 @@ function CustomInstruction({ label }: { label: string }) {
         ref={ref}
         value={value}
         rows={3}
-        placeholder="Co má Claude s textem udělat? Např. „Přepiš to jako e-mail pro kolegy“"
+        placeholder="Co má AI s textem udělat? Např. „Přepiš to jako e-mail pro kolegy“"
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
@@ -184,7 +184,7 @@ export function AiQuickPanel() {
             ) : q.text ? (
               <div dangerouslySetInnerHTML={{ __html: renderMarkdown(q.text) }} />
             ) : (
-              <p className="muted thinking-dots">Claude přemýšlí</p>
+              <p className="muted thinking-dots">AI přemýšlí</p>
             )}
           </div>
           <div className="quick-actions">

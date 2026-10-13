@@ -4,7 +4,8 @@ import path from "node:path";
 import { app, BrowserWindow, dialog, ipcMain, nativeTheme, net, protocol, shell } from "electron";
 import { pathToFileURL } from "node:url";
 import { basename, isoDate, joinPath } from "../shared/markdown";
-import type { ChatContext, ModelId, QuickRequest, Settings } from "../shared/types";
+import type { ProviderId } from "../shared/providers";
+import type { ChatContext, QuickRequest, Settings } from "../shared/types";
 import { Agent } from "./ai/agent";
 import { getApiKey, keyStorageIsEncrypted, loadSettings, saveSettings, setApiKey } from "./settings";
 import { sampleNotes } from "./sample";
@@ -99,8 +100,9 @@ function registerIpc(): void {
     }
     return next;
   });
-  handle("settings:set-key", (key: string | null) => setApiKey(key));
-  handle("ai:test-key", (model: ModelId) => agent.testKey(model));
+  handle("settings:set-key", (provider: ProviderId, key: string | null) => setApiKey(provider, key));
+  handle("ai:test-key", (provider: ProviderId) => agent.testKey(provider));
+  handle("ai:models", (provider: ProviderId) => agent.listModels(provider));
 
   // vault lifecycle
   handle("vault:pick", async () => {

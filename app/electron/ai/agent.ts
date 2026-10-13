@@ -1,8 +1,10 @@
-// Claude integration: the chat agent with vault tools, quick actions, and chat storage.
+// AI integration: the chat agent with vault tools, quick actions, and chat storage.
+// Claude runs through the Anthropic SDK; other providers through ./openai-loops.
 import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { isoDate } from "../../shared/markdown";
 import type {
   AiEvent,
@@ -11,24 +13,19 @@ import type {
   ChatMessage,
   ChatPart,
   ChatSummary,
-  ModelId,
   QuickEvent,
   QuickRequest,
   Settings,
 } from "../../shared/types";
 import type { Vault } from "../vault";
+import { PROVIDER_MAP, providerBaseUrl, providerModel, type ProviderId, type ProviderKind } from "../../shared/providers";
+import { friendlyOpenAIError, runChatLoop, runResponsesLoop, streamText } from "./openai-loops";
 import { TOOL_MAP, toolDefinitions } from "./tools";
 
 type Msg = Anthropic.Beta.BetaMessageParam;
 type EventBody = AiEvent extends infer E ? (E extends AiEvent ? Omit<E, "convId"> : never) : never;
 type Emit = (e: EventBody) => void;
 
-// $ per million tokens (input, output, cache read). Used only for the cost estimate in the UI.
-const PRICES: Record<ModelId, [number, number, number]> = {
-  "claude-sonnet-5-5": [2, 10, 0.2],
-  "claude-opus-5-5": [4, 20, 0.2],
-  "claude-haiku-5-5": [0.1, 0.5, 0.01],
-};
 
 const SYSTEM_PROMPT = `You are the assistant inside Vimmi, a calm personal workspace for notes, tasks and projects. The user's notes are Markdown files in a local vault, and you can read and change them with tools.
 
@@ -66,11 +63,14 @@ const QUICK_PROMPTS: Record<QuickRequest["action"], string> = {
 };
 
 /** Models with server-side refusal fallback support (`fallbacks: "default"`). */
-const FALLBACK_MODELS = new Set<ModelId>(["claude-sonnet-5-5", "claude-opus-5-5"]);
+const FALLBACK_MODELS = new Set<string>(["claude-sonnet-5-5", "claude-opus-5-5"]);
 
 interface StoredChat {
   chat: Chat;
-  history: Msg[];
+  /** Provider-format history: Claude messages, Responses input items, or Chat Completions messages. */
+  history: unknown[];
+  /** API shape of `history`; chats from 0.1 have none and are Claude chats. */
+  format?: ProviderKind;
   /** The tool list is fixed per chat so the prompt cache and earlier thinking stay valid. */
   webSearch: boolean;
 }
@@ -78,13 +78,15 @@ interface StoredChat {
 export interface AgentHost {
   vault: () => Vault | undefined;
   settings: () => Settings;
-  apiKey: () => string | undefined;
+  apiKey: (provider: ProviderId) => string | undefined;
   emit: (event: AiEvent) => void;
   emitQuick: (event: QuickEvent) => void;
   openNote: (path: string) => void;
 }
 
-export function friendlyError(err: unknown): string {
+export function friendlyError(err: unknown, provider: ProviderId = "anthropic"): string {
+  const openaiMessage = friendlyOpenAIError(err, PROVIDER_MAP[provider].name);
+  if (openaiMessage) return openaiMessage;
   if (err instanceof Anthropic.AuthenticationError) return "API klíč je neplatný. Zkontroluj ho v Nastavení → AI.";
   if (err instanceof Anthropic.PermissionDeniedError) return "Tento API klíč nemá přístup k vybranému modelu.";
   if (err instanceof Anthropic.NotFoundError) return "Model nebyl nalezen. Vyber jiný model v Nastavení → AI.";
@@ -108,9 +110,26 @@ export class Agent {
   constructor(private host: AgentHost) {}
 
   private client(): Anthropic {
-    const apiKey = this.host.apiKey();
+    const apiKey = this.host.apiKey("anthropic");
     if (!apiKey) throw new Error("Nejdřív vlož Claude API klíč v Nastavení → AI.");
     return new Anthropic({ apiKey });
+  }
+
+  private openaiClient(provider: ProviderId): OpenAI {
+    const info = PROVIDER_MAP[provider];
+    const apiKey = this.host.apiKey(provider);
+    if (info.needsKey && !apiKey) throw new Error(`Nejdřív vlož API klíč pro ${info.name} v Nastavení → AI.`);
+    // VIMMI_<PROVIDER>_BASE_URL lets tests and developers point a provider at another server.
+    const baseURL = process.env[`VIMMI_${provider.toUpperCase()}_BASE_URL`] || providerBaseUrl(provider, this.host.settings().baseUrls);
+    if (!baseURL) throw new Error(`Nastav adresu serveru pro ${info.name} v Nastavení → AI.`);
+    // Local servers (Ollama, LM Studio) accept any key, but the SDK requires one.
+    return new OpenAI({ apiKey: apiKey || "not-needed", baseURL });
+  }
+
+  private activeModel(provider: ProviderId): string {
+    const model = providerModel(provider, this.host.settings().models);
+    if (!model) throw new Error(`Vyber model pro ${PROVIDER_MAP[provider].name} v Nastavení → AI (tlačítko „Načíst modely“).`);
+    return model;
   }
 
   // ---------- chat storage (inside the vault, in .vimmi/chats) ----------
@@ -203,17 +222,34 @@ export class Agent {
   async send(convId: string, text: string, ctx: ChatContext): Promise<void> {
     const stored = this.loadChat(convId);
     if (!stored) throw new Error("Chat nebyl nalezen.");
-    if (this.running.has(convId)) throw new Error("Claude ještě odpovídá.");
+    if (this.running.has(convId)) throw new Error("AI ještě odpovídá.");
     const emit: Emit = (e) => this.host.emit({ ...e, convId } as AiEvent);
 
-    const { chat, history } = stored;
+    const provider = this.host.settings().provider;
+    const kind = PROVIDER_MAP[provider].kind;
+    const { chat } = stored;
+    // Switching providers mid-chat: carry the conversation over as plain text.
+    if ((stored.format ?? "anthropic") !== kind) {
+      stored.history = plainHistory(chat.messages, kind);
+      stored.format = kind;
+    }
+    const history = stored.history;
     chat.messages.push({ role: "user", parts: [{ kind: "text", text }], context: ctx });
     if (chat.messages.length === 1) chat.title = text.replace(/\s+/g, " ").slice(0, 60);
-    const userContent: Anthropic.Beta.BetaContentBlockParam[] = [];
     const contextText = this.buildContext(ctx);
-    if (contextText) userContent.push({ type: "text", text: contextText });
-    userContent.push({ type: "text", text });
-    history.push({ role: "user", content: userContent });
+    if (kind === "anthropic") {
+      const userContent: Anthropic.Beta.BetaContentBlockParam[] = [];
+      if (contextText) userContent.push({ type: "text", text: contextText });
+      userContent.push({ type: "text", text });
+      history.push({ role: "user", content: userContent });
+    } else if (kind === "responses") {
+      history.push({
+        role: "user",
+        content: [...(contextText ? [{ type: "input_text", text: contextText }] : []), { type: "input_text", text }],
+      });
+    } else {
+      history.push({ role: "user", content: contextText ? `${contextText}\n\n${text}` : text });
+    }
 
     const assistant: ChatMessage = { role: "assistant", parts: [] };
     chat.messages.push(assistant);
@@ -222,14 +258,14 @@ export class Agent {
     emit({ type: "turn_start" });
 
     try {
-      await this.loop(stored, assistant, controller.signal, emit);
+      await this.loop(stored, assistant, controller.signal, emit, provider);
     } catch (err) {
       if (err instanceof Anthropic.APIUserAbortError || controller.signal.aborted) {
         assistant.parts.push({ kind: "notice", text: "Zastaveno." });
         emit({ type: "notice", message: "Zastaveno." });
         emit({ type: "done", stopReason: "aborted" });
       } else {
-        const message = friendlyError(err);
+        const message = friendlyError(err, provider);
         assistant.parts.push({ kind: "notice", text: `⚠ ${message}` });
         emit({ type: "error", message });
       }
@@ -243,27 +279,55 @@ export class Agent {
     }
   }
 
-  private async loop(
+  private systemPrompt(settings: Settings): string {
+    return settings.customInstructions.trim()
+      ? `${SYSTEM_PROMPT}\n\nThe user's own instructions:\n${settings.customInstructions.trim()}`
+      : SYSTEM_PROMPT;
+  }
+
+  private async loop(stored: StoredChat, assistant: ChatMessage, signal: AbortSignal, send: Emit, provider: ProviderId): Promise<void> {
+    const settings = this.host.settings();
+    const vault = this.host.vault();
+    if (!vault) throw new Error("Nejdřív otevři trezor.");
+    const info = PROVIDER_MAP[provider];
+    if (info.kind === "anthropic") return this.loopClaude(stored, assistant, signal, send, vault, settings);
+    const model = this.activeModel(provider);
+    const ctx = {
+      client: this.openaiClient(provider),
+      model,
+      system: this.systemPrompt(settings),
+      effort: settings.effort,
+      webSearch: stored.webSearch,
+      history: stored.history,
+      assistant,
+      signal,
+      send,
+      prices: info.prices?.[model],
+      runTool: (id: string, name: string, input: unknown, part: Extract<ChatPart, { kind: "tool" }> | undefined) =>
+        this.runTool(id, name, input, part, vault, settings, signal, send),
+    };
+    if (info.kind === "responses") await runResponsesLoop(ctx);
+    else await runChatLoop(ctx);
+  }
+
+  private async loopClaude(
     stored: StoredChat,
     assistant: ChatMessage,
     signal: AbortSignal,
     send: Emit,
+    vault: Vault,
+    settings: Settings,
   ): Promise<void> {
-    const settings = this.host.settings();
-    const vault = this.host.vault();
-    if (!vault) throw new Error("Nejdřív otevři trezor.");
     const client = this.client();
-    const model = settings.model;
-    const { history } = stored;
+    const model = this.activeModel("anthropic");
+    const history = stored.history as Msg[];
 
     const tools: Anthropic.Beta.BetaToolUnion[] = toolDefinitions();
     if (stored.webSearch && model !== "claude-haiku-5-5") {
       tools.push({ type: "web_search_20260209", name: "web_search", max_uses: 5 });
       tools.push({ type: "web_fetch_20260209", name: "web_fetch", max_uses: 5 });
     }
-    const system = settings.customInstructions.trim()
-      ? `${SYSTEM_PROMPT}\n\nThe user's own instructions:\n${settings.customInstructions.trim()}`
-      : SYSTEM_PROMPT;
+    const system = this.systemPrompt(settings);
 
     let jsonRetries = 0;
     for (let step = 0; step < 40; step++) {
@@ -332,7 +396,7 @@ export class Agent {
       assistant.parts = assistant.parts.filter((p) => !(p.kind === "thinking" && !p.text.trim()));
 
       const usage = message.usage;
-      const [pin, pout, pcache] = PRICES[model];
+      const [pin, pout, pcache] = PROVIDER_MAP.anthropic.prices?.[model] ?? [0, 0, 0];
       const cacheRead = usage.cache_read_input_tokens ?? 0;
       const cacheWrite = usage.cache_creation_input_tokens ?? 0;
       const costUsd = (usage.input_tokens * pin + cacheWrite * pin * 1.25 + cacheRead * pcache + usage.output_tokens * pout) / 1e6;
@@ -382,7 +446,7 @@ export class Agent {
       const results: Anthropic.Beta.BetaToolResultBlockParam[] = [];
       for (const use of toolUses) {
         const part = assistant.parts.find((p): p is Extract<ChatPart, { kind: "tool" }> => p.kind === "tool" && p.id === use.id);
-        const result = await this.runTool(use, part, vault, settings, signal, send);
+        const result = await this.runTool(use.id, use.name, use.input, part, vault, settings, signal, send);
         results.push({ type: "tool_result", tool_use_id: use.id, content: result.content, is_error: result.isError || undefined });
       }
       history.push({ role: "user", content: results });
@@ -392,7 +456,9 @@ export class Agent {
   }
 
   private async runTool(
-    use: Anthropic.Beta.BetaToolUseBlock,
+    id: string,
+    name: string,
+    input: unknown,
     part: Extract<ChatPart, { kind: "tool" }> | undefined,
     vault: Vault,
     settings: Settings,
@@ -404,15 +470,15 @@ export class Agent {
         part.status = status;
         part.result = content;
       }
-      send({ type: "tool_result", id: use.id, ok: status === "ok", result: content });
+      send({ type: "tool_result", id: id, ok: status === "ok", result: content });
       return { content, isError: status === "error" };
     };
-    if (part) part.input = use.input;
-    send({ type: "tool_input", id: use.id, input: use.input });
+    if (part) part.input = input;
+    send({ type: "tool_input", id: id, input: input });
 
-    const tool = TOOL_MAP[use.name];
-    if (!tool) return finish("error", `Neznámý nástroj: ${use.name}`);
-    const parsed = tool.schema.safeParse(use.input);
+    const tool = TOOL_MAP[name];
+    if (!tool) return finish("error", `Neznámý nástroj: ${name}`);
+    const parsed = tool.schema.safeParse(input);
     if (!parsed.success) return finish("error", `Neplatný vstup nástroje: ${parsed.error.message}`);
     const env = { vault, dailyFolder: settings.dailyFolder, openNote: this.host.openNote };
 
@@ -425,9 +491,9 @@ export class Agent {
         }
         if (settings.approvalMode === "ask") {
           if (part) part.status = "waiting";
-          send({ type: "approval", id: use.id, name: use.name, input: use.input, summary: preview.summary, diff: preview.diff });
+          send({ type: "approval", id: id, name: name, input: input, summary: preview.summary, diff: preview.diff });
           const ok = await new Promise<boolean>((resolve) => {
-            this.approvals.set(use.id, resolve);
+            this.approvals.set(id, resolve);
             signal.addEventListener("abort", () => resolve(false), { once: true });
           });
           if (!ok) return finish("declined", "Uživatel tuto změnu zamítl. Nic se nezměnilo.");
@@ -449,19 +515,35 @@ export class Agent {
   async quick(req: QuickRequest): Promise<void> {
     const controller = new AbortController();
     this.quickRuns.set(req.id, controller);
+    let provider: ProviderId = "anthropic";
     try {
       const settings = this.host.settings();
-      const client = this.client();
+      provider = settings.provider;
       const instruction =
         req.action === "custom" ? `${QUICK_PROMPTS.custom}\nInstruction: ${req.instruction ?? ""}` : QUICK_PROMPTS[req.action];
-      const useFallback = FALLBACK_MODELS.has(settings.model);
+      const system =
+        "You are a writing tool inside the Vimmi notes app. Return only the requested result as Markdown, with no preamble, no explanations and no surrounding code fences.";
+      const prompt = `${instruction}\n\n<text>\n${req.text}\n</text>`;
+      const kind = PROVIDER_MAP[provider].kind;
+      if (kind !== "anthropic") {
+        const text = await streamText(
+          this.openaiClient(provider),
+          kind,
+          { model: this.activeModel(provider), system, prompt, effort: settings.quickEffort, signal: controller.signal },
+          (delta) => this.host.emitQuick({ type: "delta", id: req.id, delta }),
+        );
+        this.host.emitQuick({ type: "done", id: req.id, text: text.trim() });
+        return;
+      }
+      const client = this.client();
+      const model = this.activeModel("anthropic");
+      const useFallback = FALLBACK_MODELS.has(model);
       const stream = client.beta.messages.stream(
         {
-          model: settings.model,
+          model,
           max_tokens: 32000,
-          system:
-            "You are a writing tool inside the Vimmi notes app. Return only the requested result as Markdown, with no preamble, no explanations and no surrounding code fences.",
-          messages: [{ role: "user", content: `${instruction}\n\n<text>\n${req.text}\n</text>` }],
+          system,
+          messages: [{ role: "user", content: prompt }],
           output_config: { effort: settings.quickEffort },
           ...(useFallback ? { fallbacks: "default" as const, betas: ["server-side-fallback-2026-07-01"] } : {}),
         },
@@ -480,20 +562,56 @@ export class Agent {
         .trim();
       this.host.emitQuick({ type: "done", id: req.id, text });
     } catch (err) {
-      const message = controller.signal.aborted ? "Zastaveno." : friendlyError(err);
+      const message = controller.signal.aborted ? "Zastaveno." : friendlyError(err, provider);
       this.host.emitQuick({ type: "error", id: req.id, message });
     } finally {
       this.quickRuns.delete(req.id);
     }
   }
 
-  /** Checks the API key and model without spending tokens. */
-  async testKey(model: ModelId): Promise<{ ok: boolean; message: string }> {
+  /** Checks the key, server and model without spending tokens. */
+  async testKey(provider: ProviderId): Promise<{ ok: boolean; message: string }> {
+    const info = PROVIDER_MAP[provider];
     try {
-      const info = await this.client().models.retrieve(model);
-      return { ok: true, message: `Klíč funguje. Model ${info.display_name} je dostupný.` };
+      const model = providerModel(provider, this.host.settings().models);
+      if (info.kind === "anthropic") {
+        const found = await this.client().models.retrieve(model || info.defaultModel);
+        return { ok: true, message: `Klíč funguje. Model ${found.display_name} je dostupný.` };
+      }
+      const ids = await this.listModels(provider);
+      if (model && !ids.includes(model)) {
+        return { ok: true, message: `Spojení funguje (${ids.length} modelů), ale model „${model}“ v seznamu není. Vyber jiný.` };
+      }
+      return { ok: true, message: `Spojení funguje. ${ids.length} dostupných modelů${model ? `, „${model}“ mezi nimi` : ""}.` };
     } catch (err) {
-      return { ok: false, message: friendlyError(err) };
+      return { ok: false, message: friendlyError(err, provider) };
     }
   }
+
+  /** Live model list from the provider. */
+  async listModels(provider: ProviderId): Promise<string[]> {
+    const ids: string[] = [];
+    if (PROVIDER_MAP[provider].kind === "anthropic") {
+      for await (const m of this.client().models.list()) ids.push(m.id);
+    } else {
+      for await (const m of this.openaiClient(provider).models.list()) ids.push(m.id.replace(/^models\//, ""));
+    }
+    return [...new Set(ids)].sort((a, b) => a.localeCompare(b));
+  }
+}
+
+/** Rebuilds a provider-format history from the visible chat text (used when switching providers). */
+function plainHistory(messages: ChatMessage[], kind: ProviderKind): unknown[] {
+  const turns: { role: "user" | "assistant"; text: string }[] = [];
+  for (const m of messages) {
+    const text = m.parts.flatMap((p) => (p.kind === "text" ? [p.text] : [])).join("\n").trim();
+    if (!text) continue;
+    const last = turns.at(-1);
+    if (last?.role === m.role) last.text += `\n\n${text}`;
+    else turns.push({ role: m.role, text });
+  }
+  if (turns[0]?.role === "assistant") turns.shift();
+  // All three API shapes accept plain { role, content: string } messages.
+  void kind;
+  return turns.map((t) => ({ role: t.role, content: t.text }));
 }

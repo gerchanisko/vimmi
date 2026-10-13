@@ -1,11 +1,11 @@
 // Exposes a small, typed API to the renderer. The renderer never touches Node or the API key.
 import { contextBridge, ipcRenderer } from "electron";
+import type { ProviderId } from "../shared/providers";
 import type {
   AiEvent,
   Chat,
   ChatContext,
   ChatSummary,
-  ModelId,
   NoteMeta,
   Priority,
   QuickEvent,
@@ -27,8 +27,9 @@ const api = {
   settings: {
     get: () => invoke<Settings & { keyEncrypted: boolean }>("settings:get"),
     set: (patch: Partial<Settings>) => invoke<Settings>("settings:set", patch),
-    setKey: (key: string | null) => invoke<Settings>("settings:set-key", key),
-    testKey: (model: ModelId) => invoke<{ ok: boolean; message: string }>("ai:test-key", model),
+    setKey: (provider: ProviderId, key: string | null) => invoke<Settings>("settings:set-key", provider, key),
+    testKey: (provider: ProviderId) => invoke<{ ok: boolean; message: string }>("ai:test-key", provider),
+    models: (provider: ProviderId) => invoke<string[]>("ai:models", provider),
   },
   vault: {
     pick: () => invoke<VaultSnapshot | null>("vault:pick"),
