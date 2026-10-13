@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Méně chaosu. Více prostoru pro to důležité.</strong></p>
 
-Vimmi je minimalistický osobní pracovní prostor, který propojuje poznámky, úkoly a projekty na jednom klidném místě. Tento repozitář obsahuje jeho **prezentační web**.
+Vimmi je minimalistický osobní pracovní prostor, který propojuje poznámky, úkoly a projekty na jednom klidném místě. Tento repozitář obsahuje jeho **prezentační web** a ve složce [`app/`](app/) **desktopovou aplikaci** (Electron) s AI asistentem Claude – viz [app/README.md](app/README.md).
 
 > Vimmi je zatím ve vývoji. Rozhraní zobrazená na webu jsou ukázky návrhu, ne hotová aplikace. Web nepředstírá registraci, přihlášení ani funkční AI.
 
