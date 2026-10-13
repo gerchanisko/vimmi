@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
     "dist": "npm run build && electron-builder --linux AppImage",
-    "smoke": "npm run build && node test/smoke.mjs"
+    "smoke": "npm run build && node test/smoke.mjs",
+    "install-desktop": "node scripts/install-linux.mjs"
   },
   "build": {
     "appId": "io.github.gerchanisko.vimmi",
@@ -29,10 +30,11 @@
     },
     "linux": {
       "target": [
-        "AppImage"
+        "dir"
       ],
       "category": "Office",
-      "icon": "resources/icon.png"
+      "icon": "resources/icon.png",
+      "executableName": "vimmi"
     },
     "mac": {
       "category": "public.app-category.productivity"
@@ -84,5 +86,6 @@
   "allowScripts": {
     "esbuild@0.28.2": true,
     "electron-winstaller": false
-  }
+  },
+  "desktopName": "vimmi.desktop"
 }

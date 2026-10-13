@@ -1,7 +1,7 @@
 // AI providers Vimmi can talk to. Shared by the main process and the settings UI.
 // Model names change often, so every provider can also load its live model list.
 
-export type ProviderId = "anthropic" | "openai" | "gemini" | "opencode" | "openrouter" | "ollama" | "custom";
+export type ProviderId = "anthropic" | "openai" | "gemini" | "openrouter" | "ollama" | "custom";
 
 /** Which API shape the provider speaks. */
 export type ProviderKind = "anthropic" | "responses" | "chat";
@@ -20,6 +20,8 @@ export interface ProviderInfo {
   suggested: { id: string; label: string }[];
   note: string;
   free?: boolean;
+  /** Shown first, with a "doporučeno" badge. */
+  recommended?: boolean;
   /** $ per million tokens [input, output, cache read] for the cost estimate. */
   prices?: Record<string, [number, number, number]>;
 }
@@ -39,11 +41,26 @@ export const PROVIDERS: ProviderInfo[] = [
       { id: "claude-haiku-5-5", label: "Claude Haiku 5.5 – nejrychlejší, $0.10 / $0.50" },
     ],
     note: "Nejlepší podpora: přemýšlení, hledání na webu, záložní model při odmítnutí.",
+    recommended: true,
     prices: {
       "claude-sonnet-5-5": [2, 10, 0.2],
       "claude-opus-5-5": [4, 20, 0.2],
       "claude-haiku-5-5": [0.1, 0.5, 0.01],
     },
+  },
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    kind: "chat",
+    baseURL: "https://openrouter.ai/api/v1",
+    needsKey: true,
+    keyUrl: "https://openrouter.ai/settings/keys",
+    keyEnv: "OPENROUTER_API_KEY",
+    defaultModel: "",
+    suggested: [],
+    note: "Stovky modelů jedním klíčem, včetně Claude, GPT a Gemini. Modely s „:free“ na konci jsou zdarma (s limity). Načti seznam modelů.",
+    free: true,
+    recommended: true,
   },
   {
     id: "openai",
@@ -80,38 +97,6 @@ export const PROVIDERS: ProviderInfo[] = [
       { id: "gemini-3.1-pro", label: "Gemini 3.1 Pro – nejschopnější (placený)" },
     ],
     note: "Flash modely mají bezplatnou úroveň s denním limitem. Klíč zdarma v Google AI Studiu.",
-    free: true,
-  },
-  {
-    id: "opencode",
-    name: "OpenCode Zen",
-    kind: "chat",
-    baseURL: "https://opencode.ai/inference/v1",
-    editableBaseUrl: true,
-    needsKey: true,
-    keyUrl: "https://opencode.ai/auth",
-    keyEnv: "OPENCODE_API_KEY",
-    defaultModel: "big-pickle",
-    suggested: [
-      { id: "big-pickle", label: "Big Pickle – zdarma" },
-      { id: "nemotron-3-ultra-free", label: "Nemotron 3 Ultra – zdarma (zkušební, ne citlivá data)" },
-      { id: "mimo-v2.6-flash-free", label: "MiMo V2.6 Flash – zdarma" },
-      { id: "ling-3.1-flash-free", label: "Ling 3.1 Flash – zdarma" },
-    ],
-    note: "Bezplatné modely na omezenou dobu (seznam se mění – načti aktuální). Klíč z konzole OpenCode.",
-    free: true,
-  },
-  {
-    id: "openrouter",
-    name: "OpenRouter",
-    kind: "chat",
-    baseURL: "https://openrouter.ai/api/v1",
-    needsKey: true,
-    keyUrl: "https://openrouter.ai/settings/keys",
-    keyEnv: "OPENROUTER_API_KEY",
-    defaultModel: "",
-    suggested: [],
-    note: "Stovky modelů jedním klíčem. Modely s „:free“ na konci jsou zdarma (s limity). Načti seznam modelů.",
     free: true,
   },
   {

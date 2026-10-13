@@ -1,6 +1,6 @@
 // Agent loops for non-Claude providers, using the official OpenAI SDK:
 // - OpenAI itself via the Responses API (newer GPT models only support tools well there)
-// - Gemini, OpenCode Zen, OpenRouter, Ollama and custom servers via OpenAI-compatible Chat Completions
+// - Gemini, OpenRouter, Ollama and custom servers via OpenAI-compatible Chat Completions
 import OpenAI from "openai";
 import type { AiEvent, ChatMessage, ChatPart, Effort } from "../../shared/types";
 import { functionSchemas } from "./tools";

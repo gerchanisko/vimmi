@@ -81,7 +81,7 @@ export interface Settings {
   provider: ProviderId;
   /** Chosen model per provider (empty = provider default). */
   models: Partial<Record<ProviderId, string>>;
-  /** Server address for providers where it can be changed (Ollama, custom, OpenCode). */
+  /** Server address for providers where it can be changed (Ollama, custom). */
   baseUrls: Partial<Record<ProviderId, string>>;
   effort: Effort;
   quickEffort: Effort;
@@ -111,7 +111,7 @@ export const DEFAULT_SETTINGS: Settings = {
   baseUrls: {},
   effort: "medium",
   quickEffort: "low",
-  approvalMode: "ask",
+  approvalMode: "auto",
   webSearch: false,
   showThinking: true,
   dailyFolder: "Deník",

@@ -151,7 +151,8 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
                     >
                       <strong>{p.name}</strong>
                       <span className="provider-badges">
-                        {p.free && <span className="pill accent">zdarma</span>}
+                        {p.recommended && <span className="pill accent">doporučeno</span>}
+                        {p.free && <span className="pill">zdarma</span>}
                         {p.id === "ollama" && <span className="pill">lokálně</span>}
                         {settings.keys[p.id] && (
                           <span className="pill ok">
@@ -185,13 +186,13 @@ export default function Settings({ initialTab }: { initialTab?: string }) {
                   ))}
                 </select>
               </Row>
-              <Row label="Změny v poznámkách" hint="Čtení a hledání probíhá vždy bez ptaní.">
+              <Row label="Změny v poznámkách" hint="Automaticky: AI rovnou zapisuje, změny vidíš v chatu. Ptát se: každou změnu nejdřív schválíš.">
                 <div className="segmented">
-                  <button className={settings.approvalMode === "ask" ? "on" : ""} onClick={() => void update({ approvalMode: "ask" })}>
-                    Vždy se zeptat
-                  </button>
                   <button className={settings.approvalMode === "auto" ? "on" : ""} onClick={() => void update({ approvalMode: "auto" })}>
-                    Povolit bez ptaní
+                    Automaticky
+                  </button>
+                  <button className={settings.approvalMode === "ask" ? "on" : ""} onClick={() => void update({ approvalMode: "ask" })}>
+                    Ptát se
                   </button>
                 </div>
               </Row>
@@ -330,7 +331,7 @@ function ProviderSettings({
     void update({ models: { ...settings.models, [provider]: value.trim() } });
   };
 
-  const shown = (models ?? []).filter((m) => !onlyFree || m.endsWith(":free") || m.endsWith("-free") || m === "big-pickle");
+  const shown = (models ?? []).filter((m) => !onlyFree || m.endsWith(":free"));
 
   return (
     <div className="provider-settings">

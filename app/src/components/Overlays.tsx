@@ -26,7 +26,15 @@ function useListKeys(count: number, onEnter: (i: number, e: React.KeyboardEvent)
       onClose();
     }
   };
-  return { sel, setSel, onKeyDown };
+  // Results re-render under a resting cursor and fire mousemove; only real movement should select.
+  const lastMouse = useRef({ x: -1, y: -1 });
+  const hover = (i: number) => (e: React.MouseEvent) => {
+    if (e.clientX === lastMouse.current.x && e.clientY === lastMouse.current.y) return;
+    const first = lastMouse.current.x === -1;
+    lastMouse.current = { x: e.clientX, y: e.clientY };
+    if (!first) setSel(i);
+  };
+  return { sel, setSel, onKeyDown, hover };
 }
 
 function scrollIntoViewIfNeeded(container: HTMLElement | null, index: number) {
@@ -155,7 +163,7 @@ export function Spotlight({ initial }: { initial?: string }) {
               key={i}
               data-item
               className={`palette-item${i === keys.sel ? " sel" : ""}`}
-              onMouseMove={() => keys.setSel(i)}
+              onMouseMove={keys.hover(i)}
               onClick={(e) => activate(i, e)}
             >
               {it.kind === "note" ? (
@@ -282,7 +290,7 @@ export function CommandPalette() {
         <div className="palette-list" ref={listRef}>
           {items.length === 0 && <p className="muted pad">Žádný příkaz neodpovídá.</p>}
           {items.map((c, i) => (
-            <button key={c.id} data-item className={`palette-item${i === keys.sel ? " sel" : ""}`} onMouseMove={() => keys.setSel(i)} onClick={() => run(i)}>
+            <button key={c.id} data-item className={`palette-item${i === keys.sel ? " sel" : ""}`} onMouseMove={keys.hover(i)} onClick={() => run(i)}>
               <Icon name={c.icon ?? "command"} />
               <span className="pi-main">
                 <span className="pi-title">{c.label}</span>
@@ -326,7 +334,7 @@ export function TemplatePicker() {
             <button
               key={t}
               className={`palette-item${i === keys.sel ? " sel" : ""}`}
-              onMouseMove={() => keys.setSel(i)}
+              onMouseMove={keys.hover(i)}
               onClick={() => {
                 close();
                 void newFromTemplate(t);

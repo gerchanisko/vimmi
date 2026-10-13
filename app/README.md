@@ -30,7 +30,7 @@ Poznámky jsou obyčejné soubory Markdown ve složce (trezoru), takže jsou vž
 
 **AI asistent (Claude)**
 - Chat, který vidí otevřenou poznámku a výběr a pomocí nástrojů umí v trezoru hledat, číst poznámky, procházet úkoly, projekty, tagy, souvislosti a deník
-- Umí vytvářet a upravovat poznámky, přidávat a odškrtávat úkoly, přejmenovávat a mazat. **Každou změnu nejdřív ukáže jako rozdíl a čeká na schválení** (dá se vypnout)
+- Umí vytvářet a upravovat poznámky, přidávat a odškrtávat úkoly, přejmenovávat a mazat. Ve výchozím stavu zapisuje rovnou; v Nastavení → AI lze zapnout „Ptát se“, pak každou změnu nejdřív ukáže jako rozdíl a čeká na schválení
 - Rychlé akce nad výběrem nebo celou poznámkou: shrnout, vylepšit, opravit pravopis, zkrátit, rozvést, pokračovat v psaní, vytáhnout úkoly, osnova, vysvětlit, přeložit, navrhnout název a tagy, vlastní pokyn
 - Volitelné hledání na webu, zobrazení přemýšlení, vlastní pokyny, historie chatů (ukládá se v `.vimmi/chats` v trezoru), odhad ceny
 - Výběr poskytovatele AI (viz níže), rychlé přepnutí přímo v chatu, načtení aktuálního seznamu modelů
@@ -39,19 +39,28 @@ Poznámky jsou obyčejné soubory Markdown ve složce (trezoru), takže jsou vž
 
 | Poskytovatel | API | Poznámka |
 | --- | --- | --- |
-| **Claude (Anthropic)** | Anthropic SDK, Messages API | Výchozí, Claude Sonnet 5.5. Přemýšlení, hledání na webu, prompt caching, záložní model při odmítnutí (`fallbacks: "default"`). |
+| **Claude (Anthropic)** – doporučeno | Anthropic SDK, Messages API | Výchozí, Claude Sonnet 5.5. Přemýšlení, hledání na webu, prompt caching, záložní model při odmítnutí (`fallbacks: "default"`). |
 | **OpenAI** | OpenAI SDK, Responses API | GPT-6.x. Nástroje, přemýšlení, hledání na webu; bezstavově (`store: false`). |
 | **Google Gemini** | OpenAI-kompatibilní endpoint | Flash modely mají bezplatnou úroveň. Klíč z Google AI Studia. |
-| **OpenCode Zen** | OpenAI-kompatibilní | Bezplatné modely na omezenou dobu (Big Pickle, Nemotron, MiMo…). Klíč z konzole OpenCode. |
-| **OpenRouter** | OpenAI-kompatibilní | Stovky modelů, modely `:free` zdarma (s limity). |
+| **OpenRouter** – doporučeno | OpenAI-kompatibilní | Stovky modelů jedním klíčem, modely `:free` zdarma (s limity). |
 | **Ollama** | OpenAI-kompatibilní, lokálně | Zdarma, poznámky neopustí počítač. Model musí podporovat nástroje (tools). |
 | **Vlastní** | OpenAI Chat Completions | LM Studio, vLLM, Groq, Mistral, DeepSeek… s vlastní adresou serveru. |
 
 - Klíče se zadávají v **Nastavení → AI**, každý poskytovatel má vlastní. Ukládají se zašifrovaně přes systémovou klíčenku (Electron `safeStorage`) a nikdy se nedostanou do okna aplikace; všechna volání API probíhají v hlavním procesu.
-- Pro vývoj fungují proměnné `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `OPENCODE_API_KEY`, `OPENROUTER_API_KEY` a `VIMMI_<POSKYTOVATEL>_BASE_URL` pro jiný server.
+- Pro vývoj fungují proměnné `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY` a `VIMMI_<POSKYTOVATEL>_BASE_URL` pro jiný server.
 - Názvy modelů se často mění, proto tlačítko **Načíst modely** stáhne aktuální seznam přímo od poskytovatele.
 - Nástroje AI jsou v [`electron/ai/tools.ts`](electron/ai/tools.ts) a sdílí je všichni poskytovatelé. Nový nástroj přidáš jedním záznamem `def({...})` se schématem v Zodu; u zapisujících nastavíš `write: true` a `preview`, aby šly schválit.
 - Smyčky: Claude v [`electron/ai/agent.ts`](electron/ai/agent.ts), ostatní v [`electron/ai/openai-loops.ts`](electron/ai/openai-loops.ts). Když v rozběhnutém chatu změníš poskytovatele, konverzace se převezme jako text.
+
+## Instalace (Linux)
+
+```bash
+cd app
+npm install
+npm run install-desktop
+```
+
+Sestaví aplikaci, nainstaluje ji do `~/.local/opt/vimmi` a přidá **Vimmi** do nabídky aplikací (pak ji můžeš připnout na panel). Po změnách v kódu stačí příkaz spustit znovu. Odinstalace: `npm run install-desktop -- --uninstall` (poznámky ani nastavení se nesmažou).
 
 ## Vývoj
 
@@ -64,7 +73,7 @@ npm run dev        # vývojový režim s automatickým načítáním
 npm start          # sestaví a spustí aplikaci
 npm test           # unit testy (parser, trezor, AI nástroje)
 npm run smoke      # end-to-end test: spustí aplikaci, proklikne funkce, AI (Claude, OpenAI, kompatibilní) proti mock serverům
-npm run dist       # AppImage pro Linux do release/
+npm run dist       # AppImage pro Linux do release/ (vyžaduje FUSE)
 ```
 
 ### Struktura

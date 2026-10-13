@@ -147,10 +147,10 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const apiUrl = `http://127.0.0.1:${server.address().port}`;
 
 // ---------- launch ----------
-fs.writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ vaultPath: vaultDir, recentVaults: [vaultDir], theme: "light" }));
+fs.writeFileSync(path.join(userData, "settings.json"), JSON.stringify({ vaultPath: vaultDir, recentVaults: [vaultDir], theme: "light", approvalMode: "ask" }));
 // Create the sample vault the same way the app does on first run.
-const { sampleNotes } = await import("../dist-electron/sample-for-test.cjs").catch(() => ({ sampleNotes: null }));
-if (sampleNotes) {
+const { sampleNotes } = await import("../dist-electron/sample-for-test.cjs");
+{
   for (const [rel, content] of Object.entries(sampleNotes(new Date().toISOString().slice(0, 10)))) {
     fs.mkdirSync(path.dirname(path.join(vaultDir, rel)), { recursive: true });
     fs.writeFileSync(path.join(vaultDir, rel), content);
@@ -304,11 +304,12 @@ try {
     await page.keyboard.press("Escape");
   });
 
-  await step("custom OpenAI-compatible provider: tools + approval", async () => {
+  await step("custom OpenAI-compatible provider: tools, automatic changes", async () => {
     await page.keyboard.press("Control+,");
     await page.click(".settings-nav >> text=AI");
     await page.click(".provider-card >> text=Vlastní");
     await page.fill(".provider-settings .url-input >> nth=0", `${apiUrl}/v1`);
+    await page.click(".segmented >> text=Automaticky");
     await page.click(".provider-settings >> text=Načíst modely");
     await page.click(".model-row >> text=mock-model");
     await page.waitForTimeout(200);
@@ -317,9 +318,9 @@ try {
     await page.click(".ai-chat button[title='Nový chat']");
     await page.fill(".chat-input textarea", "Přidej úkol koupit mapu");
     await page.keyboard.press("Enter");
-    await page.waitForSelector(".approval", { timeout: 10000 });
-    await page.click(".approval >> text=Povolit");
+    // Automatic mode: no approval card, the change is written right away.
     await page.waitForSelector("text=Hotovo (compat)", { timeout: 10000 });
+    if (await page.locator(".approval").count()) throw new Error("approval shown in automatic mode");
     await shot("16-custom-provider-chat");
     if (!/- \[ \] Koupit mapu Krkonoš !2/.test(read("Cesty.md"))) throw new Error("compat tool not applied");
     const req = chatRequests.find((r) => r.tools);
@@ -328,6 +329,10 @@ try {
   });
 
   await step("OpenAI provider (Responses API): tools + approval + quick action", async () => {
+    await page.keyboard.press("Control+,");
+    await page.click(".settings-nav >> text=AI");
+    await page.click(".segmented >> text=Ptát se");
+    await page.keyboard.press("Escape");
     await page.click(".model-switch");
     await page.click(".menu >> text=OpenAI");
     await page.waitForTimeout(200);

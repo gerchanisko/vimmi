@@ -15,7 +15,7 @@ const entries = [
   { ...common, entryPoints: ["electron/main.ts"], outfile: "dist-electron/main.js" },
   { ...common, entryPoints: ["electron/preload.ts"], outfile: "dist-electron/preload.js" },
   // Used by test/smoke.mjs to create the starter vault.
-  { ...common, entryPoints: ["electron/sample.ts"], outfile: "dist-electron/sample-for-test.cjs", sourcemap: false },
+  { ...common, entryPoints: ["test/fixtures/sample-vault.ts"], outfile: "dist-electron/sample-for-test.cjs", sourcemap: false },
 ];
 
 if (watch) {
