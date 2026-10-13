@@ -1,213 +1,142 @@
-/* Vimmi — chování prezentačního webu */
+// Vimmi website: theme toggle, screenshot tour, install tabs, copy button, scroll effects.
 (() => {
-  'use strict';
-
   const root = document.documentElement;
-  const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  root.classList.add("js");
 
-  /* Světlý a tmavý vzhled
-     ------------------------------------------------------------------------ */
-
-  const THEME_KEY = 'vimmi-theme';
-  const THEME_COLORS = { light: '#F7F7F5', dark: '#111111' };
-  const themeToggle = document.querySelector('[data-theme-toggle]');
-  const themeMetas = document.querySelectorAll('meta[name="theme-color"]');
-
-  const currentTheme = () => root.dataset.theme || (darkScheme.matches ? 'dark' : 'light');
-
-  const syncTheme = () => {
-    const theme = currentTheme();
-    themeMetas.forEach((meta) => meta.setAttribute('content', THEME_COLORS[theme]));
-    if (themeToggle) {
-      themeToggle.setAttribute(
-        'aria-label',
-        theme === 'dark' ? 'Přepnout na světlý vzhled' : 'Přepnout na tmavý vzhled'
-      );
-    }
-  };
-
-  const setTheme = (theme) => {
-    root.dataset.theme = theme;
+  // Theme: follow the system until the visitor picks one.
+  const toggle = document.querySelector(".theme-toggle");
+  toggle?.addEventListener("click", () => {
+    const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
     try {
-      localStorage.setItem(THEME_KEY, theme);
-    } catch (error) {
-      /* Úložiště nemusí být dostupné (např. anonymní okno). */
+      localStorage.setItem("vimmi-theme", root.dataset.theme);
+    } catch {
+      /* private mode */
     }
-    syncTheme();
-  };
+  });
 
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const next = currentTheme() === 'dark' ? 'light' : 'dark';
-      if (document.startViewTransition && !reducedMotion.matches) {
-        document.startViewTransition(() => setTheme(next));
-      } else {
-        setTheme(next);
-      }
-    });
-  }
+  // Nav border once the page scrolls, and highlight the current section.
+  const nav = document.querySelector(".nav");
+  const onScroll = () => nav?.classList.toggle("scrolled", window.scrollY > 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
 
-  darkScheme.addEventListener('change', syncTheme);
-  syncTheme();
-
-  /* Záhlaví při posunu
-     ------------------------------------------------------------------------ */
-
-  const header = document.querySelector('[data-header]');
-
-  if (header) {
-    const updateHeader = () => header.classList.toggle('is-scrolled', window.scrollY > 4);
-    window.addEventListener('scroll', updateHeader, { passive: true });
-    updateHeader();
-  }
-
-  /* Mobilní menu — otevírání řeší nativní popover, tady jen zavírání
-     ------------------------------------------------------------------------ */
-
-  const menu = document.querySelector('[data-mobile-menu]');
-
-  if (menu && typeof menu.hidePopover === 'function') {
-    const isOpen = () => menu.matches(':popover-open');
-    const menuToggle = document.querySelector('[popovertarget="' + menu.id + '"]');
-
-    if (menuToggle) {
-      menuToggle.setAttribute('aria-expanded', 'false');
-      menu.addEventListener('toggle', (event) => {
-        menuToggle.setAttribute('aria-expanded', String(event.newState === 'open'));
-      });
-    }
-
-    menu.addEventListener('click', (event) => {
-      if (event.target.closest('a') && isOpen()) menu.hidePopover();
-    });
-
-    window.matchMedia('(min-width: 761px)').addEventListener('change', (event) => {
-      if (event.matches && isOpen()) menu.hidePopover();
-    });
-  }
-
-  /* Zvýraznění aktuální sekce v navigaci
-     ------------------------------------------------------------------------ */
-
-  const navLinks = document.querySelectorAll('[data-nav-link]');
-  const sections = [...document.querySelectorAll('[data-section]')];
-
-  if ('IntersectionObserver' in window && navLinks.length && sections.length) {
-    const visible = new Set();
-
+  const links = [...document.querySelectorAll(".nav-links a")];
+  const sections = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  if ("IntersectionObserver" in window) {
     const spy = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        });
-
-        const active = sections.find((section) => visible.has(section));
-        const key = active ? active.dataset.section : null;
-
-        navLinks.forEach((link) => {
-          if (link.dataset.navLink === key) link.setAttribute('aria-current', 'true');
-          else link.removeAttribute('aria-current');
-        });
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${e.target.id}`));
+        }
       },
-      { rootMargin: '-45% 0px -54% 0px' }
+      { rootMargin: "-45% 0px -50% 0px" },
     );
+    sections.forEach((s) => spy.observe(s));
 
-    sections.forEach((section) => spy.observe(section));
+    const reveal = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            reveal.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    document.querySelectorAll(".reveal").forEach((el) => reveal.observe(el));
+  } else {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
   }
 
-  /* Jemné odhalení obsahu při posunu
-     ------------------------------------------------------------------------ */
+  // Close the mobile menu after choosing a link.
+  const menu = document.getElementById("mobile-menu");
+  menu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => menu.hidePopover?.()));
 
-  const revealItems = document.querySelectorAll('[data-reveal]');
-
-  if ('IntersectionObserver' in window && !reducedMotion.matches) {
-    const revealer = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        });
-      },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
-    );
-
-    // Co je vidět hned po načtení, zůstane na místě bez animace.
-    revealItems.forEach((item) => {
-      if (item.getBoundingClientRect().top < window.innerHeight) item.classList.add('is-visible');
-      else revealer.observe(item);
-    });
-
-    root.classList.add('reveal-ready');
-  }
-
-  /* Propojený prostor: výběr položky ukáže její souvislosti
-     ------------------------------------------------------------------------ */
-
-  const web = document.querySelector('[data-web]');
-
-  if (web) {
-    const nodes = [...web.querySelectorAll('[data-node]')];
-    const status = web.querySelector('[data-web-status]');
-    const byId = new Map(nodes.map((node) => [node.dataset.node, node]));
-
-    const WORDS = {
-      poznamka: ['poznámka', 'poznámky', 'poznámek'],
-      ukol: ['úkol', 'úkoly', 'úkolů'],
-      podklad: ['podklad', 'podklady', 'podkladů'],
-    };
-
-    // Mezi číslem a slovem je nezlomitelná mezera, aby se nerozdělily na dva řádky.
-    const count = (n, [one, few, many]) => {
-      if (n === 1) return `${n}\u00a0${one}`;
-      return `${n}\u00a0${n >= 2 && n <= 4 ? few : many}`;
-    };
-
-    const joinCzech = (parts) =>
-      parts.length > 1 ? `${parts.slice(0, -1).join(', ')} a\u00a0${parts[parts.length - 1]}` : parts[0];
-
-    const highlight = (source) => {
-      const links = source.dataset.links.split(' ');
-      nodes.forEach((node) => {
-        node.classList.toggle('is-active', node === source);
-        node.classList.toggle('is-linked', links.includes(node.dataset.node));
+  // Accessible tabs with arrow-key navigation.
+  function tabs(list, onSelect) {
+    const buttons = [...list.querySelectorAll('[role="tab"]')];
+    const select = (btn, focus) => {
+      buttons.forEach((b) => {
+        const on = b === btn;
+        b.setAttribute("aria-selected", String(on));
+        b.tabIndex = on ? 0 : -1;
       });
-      web.classList.add('has-selection');
+      if (focus) btn.focus();
+      onSelect(btn);
     };
-
-    let selected = byId.get('n1');
-
-    const select = (node) => {
-      selected = node;
-      highlight(node);
-      nodes.forEach((item) => item.setAttribute('aria-pressed', String(item === node)));
-
-      const totals = {};
-      node.dataset.links.split(' ').forEach((id) => {
-        const kind = byId.get(id).dataset.kind;
-        totals[kind] = (totals[kind] || 0) + 1;
-      });
-      const parts = Object.keys(WORDS)
-        .filter((kind) => totals[kind])
-        .map((kind) => count(totals[kind], WORDS[kind]));
-
-      const title = document.createElement('strong');
-      title.textContent = node.querySelector('.web__title').textContent;
-      status.replaceChildren(title, ` — propojení: ${joinCzech(parts)}`);
-    };
-
-    nodes.forEach((node) => {
-      node.disabled = false;
-      node.addEventListener('click', () => select(node));
-      node.addEventListener('pointerenter', (event) => {
-        if (event.pointerType === 'mouse') highlight(node);
+    buttons.forEach((b, i) => {
+      b.tabIndex = b.getAttribute("aria-selected") === "true" ? 0 : -1;
+      b.addEventListener("click", () => select(b, false));
+      b.addEventListener("keydown", (e) => {
+        const next = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!next) return;
+        e.preventDefault();
+        select(buttons[(i + next + buttons.length) % buttons.length], true);
       });
     });
-
-    web.querySelector('.web__columns').addEventListener('pointerleave', () => highlight(selected));
-
-    select(selected);
   }
+
+  const tourList = document.querySelector(".tour-tabs");
+  const tourImg = document.querySelector(".tour-shot img");
+  if (tourList && tourImg) {
+    // Preload the other screenshots once the tour is near.
+    const preload = () => tourList.querySelectorAll("[data-shot]").forEach((b) => (new Image().src = `assets/screenshots/${b.dataset.shot}.png`));
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((e) => {
+        if (e[0].isIntersecting) {
+          preload();
+          io.disconnect();
+        }
+      }, { rootMargin: "400px" });
+      io.observe(tourList);
+    }
+    tabs(tourList, (btn) => {
+      const src = `assets/screenshots/${btn.dataset.shot}.png`;
+      if (tourImg.getAttribute("src") === src) return;
+      tourImg.classList.add("fading");
+      setTimeout(() => {
+        tourImg.src = src;
+        tourImg.alt = btn.dataset.alt || "";
+        tourImg.decode?.().catch(() => {}).finally(() => tourImg.classList.remove("fading"));
+        if (!tourImg.decode) tourImg.classList.remove("fading");
+      }, 180);
+    });
+  }
+
+  const osList = document.querySelector(".os-tabs");
+  if (osList) {
+    tabs(osList, (btn) => {
+      document.querySelectorAll(".os-panel").forEach((p) => (p.hidden = p.id !== btn.getAttribute("aria-controls")));
+    });
+    // Preselect the visitor's platform.
+    const ua = navigator.userAgent;
+    const id = /Mac/.test(ua) && !/iPhone|iPad/.test(ua) ? "tab-mac" : /Windows/.test(ua) ? "tab-win" : null;
+    if (id) document.getElementById(id)?.click();
+  }
+
+  // Copy the install command.
+  document.querySelectorAll(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = document.querySelector(btn.dataset.copy)?.textContent?.trim() ?? "";
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(document.querySelector(btn.dataset.copy));
+        getSelection().removeAllRanges();
+        getSelection().addRange(range);
+        document.execCommand("copy");
+      }
+      const label = btn.querySelector("span");
+      btn.classList.add("copied");
+      if (label) label.textContent = "Zkopírováno";
+      setTimeout(() => {
+        btn.classList.remove("copied");
+        if (label) label.textContent = "Kopírovat";
+      }, 2000);
+    });
+  });
 })();
