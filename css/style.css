@@ -965,6 +965,23 @@ kbd {
   border: 1px solid var(--border);
   color: var(--text-2);
 }
+.win-download {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-top: 6px;
+}
+.steps {
+  text-align: left;
+  max-width: 560px;
+  margin: 6px auto 0;
+  padding-left: 22px;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .soon {
   display: flex;
   flex-direction: column;

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Vimmi – poznámky, úkoly a projekty s AI</title>
-  <meta name="description" content="Vimmi je klidná aplikace na poznámky, úkoly a projekty. Obyčejné soubory Markdown, propojené poznámky, graf, přehled Dnes a AI asistent (Claude, OpenRouter, OpenAI, Gemini, Ollama). Zdarma pro Linux.">
+  <meta name="description" content="Vimmi je klidná aplikace na poznámky, úkoly a projekty. Obyčejné soubory Markdown, propojené poznámky, graf, přehled Dnes a AI asistent (Claude, OpenRouter, OpenAI, Gemini, Ollama). Zdarma pro Windows a Linux.">
   <meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -81,7 +81,7 @@
       <a href="#ai">AI asistent</a>
       <a href="#soukromi">Soukromí</a>
       <a href="#otazky">Časté otázky</a>
-      <a class="btn btn-primary" href="#stahnout">Stáhnout pro Linux</a>
+      <a class="btn btn-primary" href="#stahnout">Stáhnout</a>
     </div>
   </header>
 
@@ -97,13 +97,13 @@
         <p class="lead reveal">Poznámky, úkoly a&nbsp;projekty v&nbsp;jednom klidném prostoru. Píšeš do obyčejných souborů Markdown, Vimmi je propojí – a&nbsp;AI asistent ti s&nbsp;nimi pomůže.</p>
         <div class="hero-cta reveal">
           <a class="btn btn-primary btn-lg" href="#stahnout">
-            <svg class="i" aria-hidden="true"><use href="#i-download"/></svg> Stáhnout pro Linux
+            <svg class="i" aria-hidden="true"><use href="#i-download"/></svg> <span class="dl-label">Stáhnout zdarma</span>
           </a>
           <a class="btn btn-ghost btn-lg" href="https://github.com/gerchanisko/vimmi-app">
             <svg class="i" aria-hidden="true"><use href="#i-github"/></svg> Zdrojový kód
           </a>
         </div>
-        <p class="hero-note reveal">Zdarma · Bez účtu · Data zůstávají u&nbsp;tebe · macOS a&nbsp;Windows brzy</p>
+        <p class="hero-note reveal">Pro Windows a&nbsp;Linux · Zdarma · Bez účtu · Data zůstávají u&nbsp;tebe</p>
       </div>
       <div class="wrap">
         <figure class="hero-shot reveal">
@@ -295,12 +295,12 @@
         <div class="download-card reveal">
           <div class="section-head">
             <p class="eyebrow">Stáhnout</p>
-            <h2 id="stahnout-title">Nainstaluj Vimmi jedním příkazem</h2>
+            <h2 id="stahnout-title">Stáhni si Vimmi</h2>
           </div>
           <div class="os-tabs" role="tablist" aria-label="Operační systém">
             <button role="tab" aria-selected="true" aria-controls="os-linux" id="tab-linux">Linux</button>
-            <button role="tab" aria-selected="false" aria-controls="os-mac" id="tab-mac" tabindex="-1">macOS</button>
             <button role="tab" aria-selected="false" aria-controls="os-win" id="tab-win" tabindex="-1">Windows</button>
+            <button role="tab" aria-selected="false" aria-controls="os-mac" id="tab-mac" tabindex="-1">macOS</button>
           </div>
           <div class="os-panel" id="os-linux" role="tabpanel" aria-labelledby="tab-linux">
             <p class="muted">Otevři terminál a&nbsp;vlož:</p>
@@ -324,10 +324,17 @@
             </div>
           </div>
           <div class="os-panel" id="os-win" role="tabpanel" aria-labelledby="tab-win" hidden>
-            <div class="soon">
-              <span class="tag">brzy</span>
-              <p><strong>Verze pro Windows se připravuje.</strong> Sleduj repozitář na GitHubu, ať ti neuteče.</p>
-              <a class="btn" href="https://github.com/gerchanisko/vimmi-app"><svg class="i" aria-hidden="true"><use href="#i-github"/></svg> Sledovat na GitHubu</a>
+            <div class="win-download">
+              <a class="btn btn-primary btn-lg" href="https://github.com/gerchanisko/vimmi-app/releases/latest/download/Vimmi-Setup.exe">
+                <svg class="i" aria-hidden="true"><use href="#i-download"/></svg> Stáhnout Vimmi pro Windows
+              </a>
+              <p class="muted small">Windows 10 a&nbsp;11 (64 bit) · Instalátor <code>Vimmi-Setup.exe</code></p>
+              <ol class="steps">
+                <li>Spusť stažený <b>Vimmi-Setup.exe</b>.</li>
+                <li>Pokud Windows zobrazí modré okno SmartScreen, klikni na <b>Další informace</b> → <b>Přesto spustit</b>. Instalátor zatím není digitálně podepsaný.</li>
+                <li>Vimmi pak najdeš v&nbsp;nabídce Start a&nbsp;na ploše.</li>
+              </ol>
+              <p class="muted small"><a href="https://github.com/gerchanisko/vimmi-app/releases/latest">Všechny verze a&nbsp;poznámky k&nbsp;vydání</a></p>
             </div>
           </div>
         </div>
@@ -363,8 +370,8 @@
             <p>Každou změnu vidíš v&nbsp;chatu i&nbsp;s&nbsp;odkazem na poznámku. V&nbsp;nastavení si můžeš zapnout schvalování – pak ti asistent každou úpravu nejdřív ukáže jako rozdíl. Smazané poznámky jdou do koše uvnitř trezoru.</p>
           </details>
           <details>
-            <summary>Kdy bude verze pro Windows a&nbsp;macOS?</summary>
-            <p>Připravuje se. Zatím je Vimmi pro Linux; sleduj <a href="https://github.com/gerchanisko/vimmi-app">repozitář na GitHubu</a>.</p>
+            <summary>Na jakých systémech Vimmi funguje?</summary>
+            <p>Na Windows 10 a&nbsp;11 a&nbsp;na Linuxu (Ubuntu, Debian, Mint, Fedora, Arch, openSUSE…). Verze pro macOS se připravuje – sleduj <a href="https://github.com/gerchanisko/vimmi-app">repozitář na GitHubu</a>.</p>
           </details>
         </div>
       </div>

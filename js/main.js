@@ -111,10 +111,13 @@
     tabs(osList, (btn) => {
       document.querySelectorAll(".os-panel").forEach((p) => (p.hidden = p.id !== btn.getAttribute("aria-controls")));
     });
-    // Preselect the visitor's platform.
+    // Preselect the visitor's platform and name it on the main download button.
     const ua = navigator.userAgent;
-    const id = /Mac/.test(ua) && !/iPhone|iPad/.test(ua) ? "tab-mac" : /Windows/.test(ua) ? "tab-win" : null;
-    if (id) document.getElementById(id)?.click();
+    const os = /Windows/.test(ua) ? "win" : /Mac/.test(ua) && !/iPhone|iPad/.test(ua) ? "mac" : /Linux|X11/.test(ua) && !/Android/.test(ua) ? "linux" : null;
+    if (os === "win" || os === "mac") document.getElementById(`tab-${os}`)?.click();
+    const label = document.querySelector(".dl-label");
+    if (label && os === "win") label.textContent = "Stáhnout pro Windows";
+    if (label && os === "linux") label.textContent = "Stáhnout pro Linux";
   }
 
   // Copy the install command.
