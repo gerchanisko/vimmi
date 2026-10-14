@@ -42,6 +42,7 @@
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
     <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6M12 19h8"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
@@ -103,7 +104,7 @@
             <svg class="i" aria-hidden="true"><use href="#i-github"/></svg> Zdrojový kód
           </a>
         </div>
-        <p class="hero-note reveal">Pro Windows a&nbsp;Linux · Zdarma · Bez účtu · Data zůstávají u&nbsp;tebe</p>
+        <p class="hero-note reveal">Pro Windows, Linux a&nbsp;iPhone · Synchronizace přes tvůj GitHub · Zdarma · Data zůstávají u&nbsp;tebe</p>
       </div>
       <div class="wrap">
         <figure class="hero-shot reveal">
@@ -209,7 +210,12 @@
             <h3>Z&nbsp;klávesnice</h3>
             <p>Na všechno je zkratka: nová poznámka, dnešní deník, AI asistent, přepínání karet. A&nbsp;pro fajnšmekry Vim režim.</p>
           </article>
-          <article class="card card-full reveal">
+          <article class="card card-wide reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-sync"/></svg></div>
+            <h3>Počítač i&nbsp;telefon v&nbsp;souladu</h3>
+            <p>Poznámky se synchronizují přes soukromý repozitář na tvém GitHubu – automaticky, s&nbsp;celou historií změn. Když něco upravíš na dvou místech najednou, nic se neztratí: druhá verze se uloží vedle.</p>
+          </article>
+          <article class="card reveal">
             <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg></div>
             <h3>Funguje s&nbsp;tvým Obsidianem</h3>
             <p>Vimmi čte stejné soubory Markdown, stejné <code>[[odkazy]]</code>, <code>#tagy</code> a&nbsp;frontmatter. Otevři existující trezor a&nbsp;pokračuj – nic se nepřevádí, nic se neuzamyká.</p>
@@ -277,8 +283,8 @@
           </article>
           <article class="reveal">
             <svg class="i i-lg" aria-hidden="true"><use href="#i-lock"/></svg>
-            <h3>Žádný účet, žádný cloud</h3>
-            <p>Vimmi nemá servery ani přihlašování. API klíče jsou zašifrované v&nbsp;systémové klíčence.</p>
+            <h3>Žádný účet, žádný náš server</h3>
+            <p>Vimmi nemá servery ani přihlašování. Synchronizace jde přes tvůj vlastní soukromý GitHub a&nbsp;klíče jsou zašifrované v&nbsp;systémové klíčence.</p>
           </article>
           <article class="reveal">
             <svg class="i i-lg" aria-hidden="true"><use href="#i-monitor"/></svg>
@@ -300,6 +306,7 @@
           <div class="os-tabs" role="tablist" aria-label="Operační systém">
             <button role="tab" aria-selected="true" aria-controls="os-linux" id="tab-linux">Linux</button>
             <button role="tab" aria-selected="false" aria-controls="os-win" id="tab-win" tabindex="-1">Windows</button>
+            <button role="tab" aria-selected="false" aria-controls="os-phone" id="tab-phone" tabindex="-1">iPhone a Android</button>
             <button role="tab" aria-selected="false" aria-controls="os-mac" id="tab-mac" tabindex="-1">macOS</button>
           </div>
           <div class="os-panel" id="os-linux" role="tabpanel" aria-labelledby="tab-linux">
@@ -316,10 +323,23 @@
             </p>
             <p class="muted small">Skript doinstaluje, co chybí, sestaví aplikaci a&nbsp;přidá Vimmi do nabídky aplikací – odtud si ho připneš na panel. Instaluje se do domovské složky. Aktualizace: spusť příkaz znovu. <a href="https://github.com/gerchanisko/vimmi-app#instalace">Podrobnosti a&nbsp;odinstalace</a></p>
           </div>
+          <div class="os-panel" id="os-phone" role="tabpanel" aria-labelledby="tab-phone" hidden>
+            <div class="win-download">
+              <a class="btn btn-primary btn-lg" href="https://gerchanisko.github.io/vimmi-app/">
+                <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg> Otevřít Vimmi
+              </a>
+              <p class="muted small">Webová aplikace · funguje i&nbsp;offline · bez App Store</p>
+              <ol class="steps">
+                <li>Otevři <b>gerchanisko.github.io/vimmi-app</b> v&nbsp;Safari (na Androidu v&nbsp;Chrome).</li>
+                <li>Klepni na <b>Sdílet</b> (čtvereček se šipkou) → <b>Přidat na plochu</b>. Vimmi pak poběží jako aplikace přes celou obrazovku.</li>
+                <li>V&nbsp;<b>Nastavení → Synchronizace</b> připoj stejný GitHub repozitář jako na počítači a&nbsp;poznámky se stáhnou.</li>
+              </ol>
+            </div>
+          </div>
           <div class="os-panel" id="os-mac" role="tabpanel" aria-labelledby="tab-mac" hidden>
             <div class="soon">
               <span class="tag">brzy</span>
-              <p><strong>Verze pro macOS se připravuje.</strong> Sleduj repozitář na GitHubu, ať ti neuteče.</p>
+              <p><strong>Verze pro macOS se připravuje.</strong> Do té doby funguje <a href="https://gerchanisko.github.io/vimmi-app/">webová aplikace</a> přímo v&nbsp;Safari.</p>
               <a class="btn" href="https://github.com/gerchanisko/vimmi-app"><svg class="i" aria-hidden="true"><use href="#i-github"/></svg> Sledovat na GitHubu</a>
             </div>
           </div>
@@ -359,7 +379,7 @@
           </details>
           <details>
             <summary>Kde jsou moje poznámky uložené?</summary>
-            <p>Ve složce na tvém počítači, kterou si vybereš, jako obyčejné soubory <code>.md</code>. Vimmi nemá žádný cloud ani účet. Synchronizovat můžeš čímkoliv – Syncthing, Nextcloud, Dropbox, Git.</p>
+            <p>Na počítači ve složce, kterou si vybereš, jako obyčejné soubory <code>.md</code>; na telefonu v&nbsp;úložišti aplikace. Vimmi nemá žádný vlastní cloud ani účet. Mezi zařízeními se poznámky synchronizují přes soukromý repozitář na tvém GitHubu – nebo použij cokoliv jiného (Syncthing, Nextcloud, Dropbox).</p>
           </details>
           <details>
             <summary>Funguje to s&nbsp;Obsidianem?</summary>
@@ -371,7 +391,11 @@
           </details>
           <details>
             <summary>Na jakých systémech Vimmi funguje?</summary>
-            <p>Na Windows 10 a&nbsp;11 a&nbsp;na Linuxu (Ubuntu, Debian, Mint, Fedora, Arch, openSUSE…). Verze pro macOS se připravuje – sleduj <a href="https://github.com/gerchanisko/vimmi-app">repozitář na GitHubu</a>.</p>
+            <p>Na Windows 10 a&nbsp;11, na Linuxu (Ubuntu, Debian, Mint, Fedora, Arch, openSUSE…) a&nbsp;jako webová aplikace na iPhonu, iPadu a&nbsp;Androidu. Nativní verze pro macOS se připravuje, do té doby funguje webová aplikace.</p>
+          </details>
+          <details>
+            <summary>Jak dostanu poznámky z&nbsp;počítače do telefonu?</summary>
+            <p>Zapni synchronizaci: vytvoř si soukromý repozitář na GitHubu, v&nbsp;<b>Nastavení → Synchronizace</b> vlož token a&nbsp;repozitář na počítači i&nbsp;v&nbsp;telefonu. Pak se poznámky synchronizují samy – při spuštění, chvíli po úpravě a&nbsp;každé dvě minuty.</p>
           </details>
         </div>
       </div>

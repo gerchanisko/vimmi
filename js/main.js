@@ -113,11 +113,15 @@
     });
     // Preselect the visitor's platform and name it on the main download button.
     const ua = navigator.userAgent;
-    const os = /Windows/.test(ua) ? "win" : /Mac/.test(ua) && !/iPhone|iPad/.test(ua) ? "mac" : /Linux|X11/.test(ua) && !/Android/.test(ua) ? "linux" : null;
-    if (os === "win" || os === "mac") document.getElementById(`tab-${os}`)?.click();
+    const os = /iPhone|iPad|Android/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ? "phone" : /Windows/.test(ua) ? "win" : /Mac/.test(ua) ? "mac" : /Linux|X11/.test(ua) ? "linux" : null;
+    if (os === "win" || os === "mac" || os === "phone") document.getElementById(`tab-${os}`)?.click();
     const label = document.querySelector(".dl-label");
     if (label && os === "win") label.textContent = "Stáhnout pro Windows";
     if (label && os === "linux") label.textContent = "Stáhnout pro Linux";
+    if (label && os === "phone") {
+      label.textContent = "Otevřít Vimmi";
+      label.closest("a").href = "https://gerchanisko.github.io/vimmi-app/";
+    }
   }
 
   // Copy the install command.
