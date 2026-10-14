@@ -21,7 +21,8 @@
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  const links = [...document.querySelectorAll(".nav-links a")];
+  // Only in-page links take part in highlighting the current section.
+  const links = [...document.querySelectorAll(".nav-links a")].filter((a) => a.getAttribute("href")?.startsWith("#"));
   const sections = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
   if ("IntersectionObserver" in window) {
     const spy = new IntersectionObserver(

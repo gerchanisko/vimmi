@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Návod – Vimmi na počítači, iPhonu a Androidu</title>
+  <meta name="description" content="Jak nainstalovat Vimmi na Windows, Linux, iPhone a Android a jak zapnout synchronizaci poznámek přes GitHub. Krok za krokem.">
+  <meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Návod – Vimmi na všech zařízeních">
+  <meta property="og:description" content="Instalace na Windows, Linux, iPhone a Android a synchronizace poznámek přes GitHub krok za krokem.">
+  <meta property="og:url" content="https://vimmi.space/navod.html">
+  <meta property="og:image" content="https://vimmi.space/assets/og-image.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    try { var t = localStorage.getItem("vimmi-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 24 24"><path d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z" fill="currentColor"/><circle cx="18.38" cy="6.24" r="2.24" fill="#6D63FF"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="i-task" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/><path d="M12 7.2V11M12 11l-5.6 6.3M12 11l5.6 6.3"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/><path d="M19 3v4M17 5h4M5 17v3M3.5 18.5h3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6M12 19h8"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path stroke="none" fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></symbol>
+  </svg>
+
+  <a class="skip" href="#obsah">Přeskočit na obsah</a>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="./" aria-label="Vimmi – úvod">
+        <svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg>
+        <span>Vimmi</span>
+      </a>
+      <nav class="nav-links" aria-label="Hlavní navigace">
+        <a href="./#funkce">Funkce</a>
+        <a href="./#ai">AI</a>
+        <a href="./#soukromi">Soukromí</a>
+        <a href="./#otazky">Otázky</a>
+        <a href="navod.html" class="active" aria-current="page">Návod</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Přepnout světlý a tmavý vzhled">
+          <svg class="i i-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <svg class="i i-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        </button>
+        <a class="icon-btn" href="https://github.com/gerchanisko/vimmi-app" aria-label="Vimmi na GitHubu">
+          <svg class="i" aria-hidden="true"><use href="#i-github"/></svg>
+        </a>
+        <a class="btn btn-primary btn-sm nav-cta" href="./#stahnout">Stáhnout</a>
+        <button class="icon-btn menu-btn" type="button" popovertarget="mobile-menu" aria-label="Otevřít menu">
+          <svg class="i" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu" popover>
+      <a href="./#funkce">Funkce</a>
+      <a href="./#ai">AI asistent</a>
+      <a href="./#soukromi">Soukromí</a>
+      <a href="./#otazky">Časté otázky</a>
+      <a href="navod.html">Návod</a>
+      <a class="btn btn-primary" href="./#stahnout">Stáhnout</a>
+    </div>
+  </header>
+
+  <main id="obsah" class="guide">
+    <div class="wrap guide-layout">
+      <aside class="guide-toc" aria-label="Obsah návodu">
+        <p class="eyebrow">Obsah</p>
+        <a href="#pocitac">1. Počítač</a>
+        <a href="#iphone">2. iPhone a iPad</a>
+        <a href="#android">3. Android</a>
+        <a href="#sync">4. Synchronizace</a>
+        <a href="#ai">5. AI na telefonu</a>
+        <a href="#problemy">6. Když něco nejde</a>
+      </aside>
+
+      <article class="guide-body">
+        <header class="guide-head">
+          <p class="eyebrow">Návod</p>
+          <h1>Vimmi na všech tvých zařízeních</h1>
+          <p class="lead">Nainstaluj Vimmi na počítač a&nbsp;telefon a&nbsp;propoj je, aby poznámky byly všude stejné. Celé to zabere asi deset minut.</p>
+        </header>
+
+        <section id="pocitac" class="guide-section">
+          <h2><span class="num">1</span> Počítač</h2>
+          <h3>Windows 10 a&nbsp;11</h3>
+          <ol class="steps-big">
+            <li>Stáhni <a href="https://github.com/gerchanisko/vimmi-app/releases/latest/download/Vimmi-Setup.exe"><b>Vimmi-Setup.exe</b></a> a&nbsp;spusť ho.</li>
+            <li>Pokud se objeví modré okno <b>Windows ochránil váš počítač</b> (SmartScreen), klikni na <b>Další informace</b> → <b>Přesto spustit</b>. Instalátor zatím není digitálně podepsaný.</li>
+            <li>Projdi instalací. Vimmi pak najdeš v&nbsp;nabídce Start a&nbsp;na ploše.</li>
+          </ol>
+          <h3>Linux</h3>
+          <p>Otevři terminál a&nbsp;vlož jeden příkaz. Skript si sám doinstaluje, co chybí, a&nbsp;přidá Vimmi do nabídky aplikací:</p>
+          <div class="command">
+            <svg class="i" aria-hidden="true"><use href="#i-terminal"/></svg>
+            <code id="cmd-linux">curl -fsSL https://raw.githubusercontent.com/gerchanisko/vimmi-app/main/install.sh | bash</code>
+            <button class="btn btn-sm copy-btn" type="button" data-copy="#cmd-linux" aria-label="Kopírovat příkaz"><svg class="i i-sm" aria-hidden="true"><use href="#i-copy"/></svg><span>Kopírovat</span></button>
+          </div>
+          <p class="muted small">Funguje na Ubuntu, Debianu, Mintu, Fedoře, Archu, Manjaru i&nbsp;openSUSE. Aktualizace: spusť stejný příkaz znovu.</p>
+          <p>Při prvním spuštění zvol <b>Vytvořit nový trezor</b> (nebo otevři existující složku s&nbsp;poznámkami, třeba z&nbsp;Obsidianu).</p>
+        </section>
+
+        <section id="iphone" class="guide-section">
+          <h2><span class="num">2</span> iPhone a&nbsp;iPad</h2>
+          <div class="guide-split">
+            <div>
+              <p>Vimmi na iPhonu je webová aplikace – žádný App Store, žádný účet. Přidáš si ji na plochu a&nbsp;pak se chová jako normální aplikace: má ikonu, běží přes celou obrazovku a&nbsp;funguje i&nbsp;bez internetu.</p>
+              <ol class="steps-big">
+                <li>Otevři <b>Safari</b> (ne Chrome – přidání na plochu spolehlivě funguje v&nbsp;Safari).</li>
+                <li>Jdi na <a href="https://gerchanisko.github.io/vimmi-app/"><b>gerchanisko.github.io/vimmi-app</b></a>.</li>
+                <li>Dole klepni na <b>Sdílet</b> <span class="key-icon" aria-hidden="true"><svg class="i i-sm"><use href="#i-share"/></svg></span> (čtvereček se šipkou nahoru).</li>
+                <li>Sjeď níž a&nbsp;vyber <b>Přidat na plochu</b> (v&nbsp;angličtině <i>Add to Home Screen</i>) → <b>Přidat</b>.</li>
+                <li>Spouštěj Vimmi už jen ikonou z&nbsp;plochy.</li>
+              </ol>
+              <p class="tip"><b>Máš už poznámky na počítači?</b> Při prvním spuštění klepni na <b>Mám poznámky na GitHubu</b> a&nbsp;pokračuj <a href="#sync">synchronizací</a>. Jinak klepni na <b>Začít psát</b>.</p>
+            </div>
+            <figure class="phone-frame guide-phone">
+              <img src="assets/screenshots/phone-today.png" width="1170" height="2532" loading="lazy" alt="Vimmi na iPhonu: přehled Dnes se spodní lištou.">
+            </figure>
+          </div>
+        </section>
+
+        <section id="android" class="guide-section">
+          <h2><span class="num">3</span> Android</h2>
+          <ol class="steps-big">
+            <li>Otevři <b>Chrome</b> a&nbsp;jdi na <a href="https://gerchanisko.github.io/vimmi-app/"><b>gerchanisko.github.io/vimmi-app</b></a>.</li>
+            <li>Chrome často sám nabídne <b>Instalovat aplikaci</b> – potvrď. Pokud ne, klepni vpravo nahoře na <b>⋮</b> → <b>Přidat na plochu</b> (nebo <b>Instalovat aplikaci</b>) → <b>Instalovat</b>.</li>
+            <li>Vimmi se objeví mezi aplikacemi a&nbsp;na ploše.</li>
+          </ol>
+          <p class="muted small">Funguje i&nbsp;v&nbsp;dalších prohlížečích (Edge, Samsung Internet), postup je podobný.</p>
+        </section>
+
+        <section id="sync" class="guide-section">
+          <h2><span class="num">4</span> Synchronizace přes GitHub</h2>
+          <p>Poznámky se synchronizují přes <b>soukromý repozitář na tvém GitHubu</b>. Je to zdarma, máš celou historii změn a&nbsp;nepotřebuješ žádný další účet. Když GitHub účet nemáš, založ si ho na <a href="https://github.com/signup">github.com/signup</a>.</p>
+
+          <h3>Krok A&nbsp;– soukromý repozitář <span class="muted">(jednou)</span></h3>
+          <ol class="steps-big">
+            <li>Otevři <a href="https://github.com/new?name=vimmi-poznamky&amp;visibility=private"><b>github.com/new</b></a>.</li>
+            <li><b>Repository name:</b> <code>vimmi-poznamky</code> (může být i&nbsp;jiný název).</li>
+            <li>Vyber <b>Private</b> – aby poznámky nebyly veřejné.</li>
+            <li>Nic dalšího nezaškrtávej (žádné README) a&nbsp;klikni na <b>Create repository</b>.</li>
+          </ol>
+
+          <h3>Krok B&nbsp;– token <span class="muted">(pro každé zařízení vlastní)</span></h3>
+          <p>Token je klíč, kterým se Vimmi přihlásí jen k&nbsp;tomuto jednomu repozitáři. Doporučujeme pro každé zařízení vytvořit vlastní – nemusíš ho pak přenášet a&nbsp;můžeš ho kdykoliv zrušit.</p>
+          <ol class="steps-big">
+            <li>Otevři <a href="https://github.com/settings/personal-access-tokens/new"><b>github.com/settings/personal-access-tokens/new</b></a> (na telefonu v&nbsp;prohlížeči, na počítači tamtéž).</li>
+            <li><b>Token name:</b> třeba <code>Vimmi – počítač</code> nebo <code>Vimmi – iPhone</code>.</li>
+            <li><b>Expiration:</b> zvol, jak dlouho má platit (třeba <i>1 year</i>). Až vyprší, prostě vytvoříš nový.</li>
+            <li><b>Repository access:</b> vyber <b>Only select repositories</b> → <b>Select repositories</b> → <code>vimmi-poznamky</code>.</li>
+            <li><b>Permissions:</b> klikni na <b>Add permissions</b>, do hledání napiš <b><code>Contents</code></b> (ne „Read and write“) a&nbsp;klikni na něj. Vedle <b>Contents</b> pak přepni přístup na <b>Read and write</b>. <i>Metadata: Read-only</i> se přidá samo.</li>
+            <li>Klikni na <b>Generate token</b> a&nbsp;token (začíná <code>github_pat_</code>) hned zkopíruj – GitHub ho ukáže jen jednou.</li>
+          </ol>
+
+          <h3>Krok C&nbsp;– zapni synchronizaci ve Vimmi</h3>
+          <ol class="steps-big">
+            <li>Na <b>počítači</b> otevři vlevo dole <b>Nastavení → Synchronizace</b>. Na <b>telefonu</b> klepni na <b>☰</b> → <b>Nastavení → Synchronizace</b> (nebo při prvním spuštění na <b>Mám poznámky na GitHubu</b>).</li>
+            <li>Vlož token a&nbsp;klikni na <b>Uložit</b> – objeví se <i>„Token funguje – přihlášen jako …“</i>.</li>
+            <li>Zkontroluj repozitář (např. <code>tvuj-ucet/vimmi-poznamky</code>) a&nbsp;klikni na <b>Zapnout</b>.</li>
+            <li>Totéž udělej na druhém zařízení se stejným repozitářem. Hotovo.</li>
+          </ol>
+          <p class="tip"><b>Začni počítačem.</b> Když nejdřív zapneš synchronizaci tam, kde už poznámky máš, druhé zařízení si je jen stáhne.</p>
+
+          <h3>Jak to pak funguje</h3>
+          <ul class="guide-list">
+            <li><b>Samo:</b> při spuštění, chvíli po každé úpravě, každou minutu a&nbsp;když se do aplikace vrátíš.</li>
+            <li><b>Ikona mráčku</b> nahoře ukazuje stav. Klepnutím synchronizuješ hned; když zčervená, klepnutí otevře nastavení s&nbsp;popisem chyby.</li>
+            <li><b>Nic se neztratí:</b> když stejnou poznámku upravíš na dvou zařízeních zároveň, druhá verze se uloží vedle jako <i>„Poznámka (konflikt iPhone 2026-10-14)“</i>. Smazané poznámky jdou do koše.</li>
+            <li><b>Historie:</b> každá změna je uložená na GitHubu (Nastavení → Synchronizace → <b>Historie změn</b>), vrátit se dá cokoliv.</li>
+          </ul>
+        </section>
+
+        <section id="ai" class="guide-section">
+          <h2><span class="num">5</span> AI na telefonu <span class="muted">(volitelné)</span></h2>
+          <p>Klíče k&nbsp;AI se mezi zařízeními nesynchronizují – na telefonu je zadáš zvlášť: <b>☰ → Nastavení → AI</b>, vyber poskytovatele (doporučujeme <b>Claude</b> nebo <b>OpenRouter</b>, který má i&nbsp;bezplatné modely) a&nbsp;vlož API klíč. Pak klepni dole na <b>AI</b> a&nbsp;ptej se.</p>
+        </section>
+
+        <section id="problemy" class="guide-section">
+          <h2><span class="num">6</span> Když něco nejde</h2>
+          <div class="trouble">
+            <div><b>„Token je neplatný nebo vypršel“</b><p>Vytvoř nový token (krok B) a&nbsp;vlož ho znovu.</p></div>
+            <div><b>„Repozitář … nebyl nalezen“</b><p>Překlep v&nbsp;názvu repozitáře, nebo token nemá v&nbsp;<i>Only select repositories</i> vybraný správný repozitář.</p></div>
+            <div><b>„Token nemá oprávnění k&nbsp;zápisu“</b><p>V&nbsp;tokenu chybí <b>Contents: Read and write</b>. Uprav token na GitHubu nebo vytvoř nový.</p></div>
+            <div><b>V&nbsp;hledání oprávnění se ukazuje „No items available“</b><p>Hledej <code>Contents</code>, ne „Read and write“ – úroveň přístupu se nastavuje až po přidání.</p></div>
+            <div><b>Na iPhonu chybí „Přidat na plochu“</b><p>Otevři stránku v&nbsp;<b>Safari</b> a&nbsp;v&nbsp;menu Sdílet sjeď níž; případně klepni na <i>Upravit akce</i> a&nbsp;přidej ji.</p></div>
+            <div><b>Poznámky se na telefonu neobjevily</b><p>Klepni na ikonu mráčku nahoře. Pokud je červená, otevře se nastavení s&nbsp;popisem chyby.</p></div>
+          </div>
+          <p>Nepomohlo to? Napiš nám na <a href="https://github.com/gerchanisko/vimmi-app/issues">GitHubu</a>.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="./"><svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg><span>Vimmi</span></a>
+      <p class="muted small">Poznámky, úkoly a&nbsp;projekty na jednom klidném místě.</p>
+      <nav class="footer-links" aria-label="Odkazy v patičce">
+        <a href="https://github.com/gerchanisko/vimmi-app">GitHub</a>
+        <a href="https://github.com/gerchanisko/vimmi-app/issues">Nahlásit problém</a>
+        <a href="./#stahnout">Stáhnout</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
