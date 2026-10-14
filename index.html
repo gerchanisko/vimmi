@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vimmi – poznámky, úkoly a projekty s AI</title>
+  <meta name="description" content="Vimmi je klidná aplikace na poznámky, úkoly a projekty. Obyčejné soubory Markdown, propojené poznámky, graf, přehled Dnes a AI asistent (Claude, OpenRouter, OpenAI, Gemini, Ollama). Zdarma pro Windows a Linux.">
+  <meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e0e10" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vimmi – poznámky, úkoly a projekty s AI">
+  <meta property="og:description" content="Klidné místo pro všechno důležité. Obyčejné soubory Markdown a AI asistent, který s tebou přemýšlí.">
+  <meta property="og:url" content="https://vimmi.space/">
+  <meta property="og:image" content="https://vimmi.space/assets/og-image.png">
+  <meta property="og:locale" content="cs_CZ">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    try { var t = localStorage.getItem("vimmi-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 24 24"><path d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z" fill="currentColor"/><circle cx="18.38" cy="6.24" r="2.24" fill="#6D63FF"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="i-task" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/><path d="M12 7.2V11M12 11l-5.6 6.3M12 11l5.6 6.3"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/><path d="M19 3v4M17 5h4M5 17v3M3.5 18.5h3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6M12 19h8"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path stroke="none" fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></symbol>
+  </svg>
+
+  <a class="skip" href="#obsah">Přeskočit na obsah</a>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top" aria-label="Vimmi – úvod">
+        <svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg>
+        <span>Vimmi</span>
+      </a>
+      <nav class="nav-links" aria-label="Hlavní navigace">
+        <a href="#funkce">Funkce</a>
+        <a href="#ai">AI</a>
+        <a href="#soukromi">Soukromí</a>
+        <a href="#otazky">Otázky</a>
+        <a href="navod.html">Návod</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Přepnout světlý a tmavý vzhled">
+          <svg class="i i-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <svg class="i i-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        </button>
+        <a class="icon-btn" href="https://github.com/gerchanisko/vimmi-app" aria-label="Vimmi na GitHubu">
+          <svg class="i" aria-hidden="true"><use href="#i-github"/></svg>
+        </a>
+        <a class="btn btn-primary btn-sm nav-cta" href="#stahnout">Stáhnout</a>
+        <button class="icon-btn menu-btn" type="button" popovertarget="mobile-menu" aria-label="Otevřít menu">
+          <svg class="i" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="mobile-menu" popover>
+      <a href="#funkce">Funkce</a>
+      <a href="#ai">AI asistent</a>
+      <a href="#soukromi">Soukromí</a>
+      <a href="#otazky">Časté otázky</a>
+      <a href="navod.html">Návod</a>
+      <a class="btn btn-primary" href="#stahnout">Stáhnout</a>
+    </div>
+  </header>
+
+  <main id="obsah">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="wrap hero-text">
+        <a class="pill-link reveal" href="#ai">
+          <span class="pill-new">Nové</span> AI asistent s&nbsp;Claude a&nbsp;OpenRouterem
+          <svg class="i i-sm" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
+        <h1 class="reveal">Všechno důležité.<br><span class="accent-text">Na jednom místě.</span></h1>
+        <p class="lead reveal">Poznámky, úkoly a&nbsp;projekty v&nbsp;jednom klidném prostoru. Píšeš do obyčejných souborů Markdown, Vimmi je propojí – a&nbsp;AI asistent ti s&nbsp;nimi pomůže.</p>
+        <div class="hero-cta reveal">
+          <a class="btn btn-primary btn-lg" href="#stahnout">
+            <svg class="i" aria-hidden="true"><use href="#i-download"/></svg> <span class="dl-label">Stáhnout zdarma</span>
+          </a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/gerchanisko/vimmi-app">
+            <svg class="i" aria-hidden="true"><use href="#i-github"/></svg> Zdrojový kód
+          </a>
+        </div>
+        <p class="hero-note reveal">Pro Windows, Linux a&nbsp;iPhone · Synchronizace přes tvůj GitHub · Zdarma · Data zůstávají u&nbsp;tebe</p>
+      </div>
+      <div class="wrap">
+        <figure class="hero-shot reveal">
+          <div class="window">
+            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img class="shot-light" src="assets/screenshots/editor-ai.png" width="2160" height="1350" alt="Vimmi: projekt Web Vimmi s vlastnostmi, úkoly a štítky termínů, vpravo AI asistent shrnuje, co tě čeká tento týden.">
+            <img class="shot-dark" src="assets/screenshots/editor-ai-dark.png" width="2160" height="1350" alt="" aria-hidden="true" loading="lazy">
+          </div>
+        </figure>
+      </div>
+      <div class="wrap providers-strip reveal" aria-label="Podporovaní poskytovatelé AI">
+        <span class="muted">AI podle tvé volby</span>
+        <ul>
+          <li>Claude</li><li>OpenRouter</li><li>OpenAI</li><li>Gemini</li><li>Ollama</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Tour -->
+    <section class="section tour" aria-labelledby="tour-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Prohlídka</p>
+          <h2 id="tour-title">Klidné rozhraní pro celý tvůj den</h2>
+          <p class="muted">Žádné červené odznáčky, žádný hluk. Jen to, co právě potřebuješ.</p>
+        </div>
+        <div class="tour-tabs reveal" role="tablist" aria-label="Obrazovky aplikace">
+          <button role="tab" aria-selected="true" aria-controls="tour-panel" data-shot="today" data-alt="Přehled Dnes: úkoly po termínu, na dnes a na příštích 7 dní, naposledy upravené poznámky.">
+            <svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg> Dnes
+          </button>
+          <button role="tab" aria-selected="false" aria-controls="tour-panel" data-shot="projects" data-alt="Projekty s postupem, dalšími úkoly a propojenými poznámkami.">
+            <svg class="i" aria-hidden="true"><use href="#i-folder"/></svg> Projekty
+          </button>
+          <button role="tab" aria-selected="false" aria-controls="tour-panel" data-shot="graph" data-alt="Graf souvislostí mezi poznámkami a tagy.">
+            <svg class="i" aria-hidden="true"><use href="#i-graph"/></svg> Graf
+          </button>
+          <button role="tab" aria-selected="false" aria-controls="tour-panel" data-shot="search" data-alt="Hledání Ctrl+K napříč poznámkami, úkoly a projekty, bez ohledu na diakritiku.">
+            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg> Hledání
+          </button>
+          <button role="tab" aria-selected="false" aria-controls="tour-panel" data-shot="dark" data-alt="Denní poznámka v tmavém vzhledu.">
+            <svg class="i" aria-hidden="true"><use href="#i-moon"/></svg> Tmavý vzhled
+          </button>
+        </div>
+        <figure class="tour-shot reveal" id="tour-panel" role="tabpanel">
+          <div class="window">
+            <img src="assets/screenshots/today.png" width="2160" height="1350" loading="lazy" alt="Přehled Dnes: úkoly po termínu, na dnes a na příštích 7 dní, naposledy upravené poznámky.">
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Phone -->
+    <section class="section phone" id="mobil" aria-labelledby="mobil-title">
+      <div class="wrap phone-grid">
+        <div class="phone-text reveal">
+          <p class="eyebrow">Na telefonu</p>
+          <h2 id="mobil-title">Vimmi v&nbsp;kapse</h2>
+          <p class="lead">Rychlá poznámka v&nbsp;tramvaji, odškrtnutý úkol v&nbsp;obchodě, otázka pro AI cestou domů. Na iPhonu i&nbsp;Androidu, i&nbsp;bez signálu.</p>
+          <ul class="checks">
+            <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg> Stejné poznámky jako na počítači – synchronizace přes tvůj GitHub</li>
+            <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg> Přehled Dnes, úkoly, hledání a&nbsp;AI asistent</li>
+            <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg> <span>Bez App Store: otevři v&nbsp;Safari a&nbsp;dej <b>Přidat na plochu</b></span></li>
+          </ul>
+          <div class="hero-cta phone-cta">
+            <a class="btn btn-primary btn-lg" href="https://gerchanisko.github.io/vimmi-app/">
+              <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg> Otevřít na telefonu
+            </a>
+          </div>
+        </div>
+        <div class="phones reveal" aria-label="Vimmi na telefonu">
+          <figure class="phone-frame phone-back-left">
+            <img src="assets/screenshots/phone-note.png" width="1170" height="2532" loading="lazy" alt="Poznámka projektu s vlastnostmi a úkoly na telefonu.">
+          </figure>
+          <figure class="phone-frame phone-front">
+            <img src="assets/screenshots/phone-today.png" width="1170" height="2532" loading="lazy" alt="Přehled Dnes na telefonu se spodní lištou Dnes, Úkoly, Nová poznámka, Hledat a AI.">
+          </figure>
+          <figure class="phone-frame phone-back-right">
+            <img src="assets/screenshots/phone-tasks-dark.png" width="1170" height="2532" loading="lazy" alt="Úkoly na telefonu v tmavém vzhledu.">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="funkce" aria-labelledby="funkce-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Funkce</p>
+          <h2 id="funkce-title">Všechno, co čekáš od poznámek.<br>A&nbsp;nic navíc.</h2>
+        </div>
+        <div class="bento">
+          <article class="card card-wide reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-pen"/></svg></div>
+            <h3>Psaní bez rozptylování</h3>
+            <p>Editor Markdownu s&nbsp;živým náhledem: značky se schovají všude kromě řádku, na kterém píšeš. Zvýraznění kódu, vkládání obrázků a&nbsp;volitelný Vim režim.</p>
+            <div class="mini-editor" aria-hidden="true">
+              <div class="me-line me-h">Schůzka – web</div>
+              <div class="me-line"><span class="me-bullet">•</span> Ukázat <b>skutečné</b> snímky aplikace</div>
+              <div class="me-line"><span class="me-check"></span> Poslat Tereze texty <span class="me-chip">čt 15. 10.</span> <span class="me-dot"></span></div>
+              <div class="me-line me-active">Inspirace v [[<span class="me-link">Nápady</span><span class="me-caret"></span></div>
+            </div>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-link"/></svg></div>
+            <h3>Propojené poznámky</h3>
+            <p>Napiš <code>[[</code> a&nbsp;propoj. Zpětné odkazy, nepropojené zmínky a&nbsp;související poznámky ukážou souvislosti, na které bys zapomněl.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-task"/></svg></div>
+            <h3>Úkoly kdekoliv</h3>
+            <p>Řádek <code>- [ ] úkol @2026-10-20 !1</code> v&nbsp;jakékoliv poznámce je úkol s&nbsp;termínem a&nbsp;prioritou. Všechny se sejdou v&nbsp;přehledu <b>Dnes</b>.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-folder"/></svg></div>
+            <h3>Projekty</h3>
+            <p>Úkoly, poznámky a&nbsp;zápisy ze schůzek k&nbsp;jednomu cíli pohromadě. S&nbsp;postupem a&nbsp;tím, co je na řadě.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></div>
+            <h3>Najdeš všechno</h3>
+            <p><kbd>Ctrl</kbd> <kbd>K</kbd> prohledá názvy i&nbsp;obsah – bez ohledu na diakritiku. <kbd>Ctrl</kbd> <kbd>P</kbd> otevře všechny příkazy.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-graph"/></svg></div>
+            <h3>Graf souvislostí</h3>
+            <p>Celý trezor jako mapa. Nebo jen okolí jedné poznámky, s&nbsp;tagy i&nbsp;odkazy na poznámky, které teprve vzniknou.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg></div>
+            <h3>Deník a šablony</h3>
+            <p><kbd>Ctrl</kbd> <kbd>D</kbd> otevře dnešní poznámku. Šablony pro schůzky nebo cokoliv dalšího s&nbsp;datem a&nbsp;názvem doplněným za tebe.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-keyboard"/></svg></div>
+            <h3>Z&nbsp;klávesnice</h3>
+            <p>Na všechno je zkratka: nová poznámka, dnešní deník, AI asistent, přepínání karet. A&nbsp;pro fajnšmekry Vim režim.</p>
+          </article>
+          <article class="card card-wide reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-sync"/></svg></div>
+            <h3>Počítač i&nbsp;telefon v&nbsp;souladu</h3>
+            <p>Poznámky se synchronizují přes soukromý repozitář na tvém GitHubu – automaticky, s&nbsp;celou historií změn. Když něco upravíš na dvou místech najednou, nic se neztratí: druhá verze se uloží vedle.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg></div>
+            <h3>Funguje s&nbsp;tvým Obsidianem</h3>
+            <p>Vimmi čte stejné soubory Markdown, stejné <code>[[odkazy]]</code>, <code>#tagy</code> a&nbsp;frontmatter. Otevři existující trezor a&nbsp;pokračuj – nic se nepřevádí, nic se neuzamyká.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI -->
+    <section class="section ai" id="ai" aria-labelledby="ai-title">
+      <div class="wrap ai-grid">
+        <div class="ai-text reveal">
+          <p class="eyebrow">AI asistent</p>
+          <h2 id="ai-title">Asistent, který zná tvoje poznámky</h2>
+          <p class="lead">Zeptej se, co tě čeká tento týden. Nech si shrnout dlouhý zápis, vytáhnout z&nbsp;něj úkoly nebo najít poznámky, které spolu souvisí. Asistent si poznámky sám dohledá, přečte a&nbsp;rovnou upraví.</p>
+          <ul class="checks">
+            <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg> Hledá, čte a&nbsp;upravuje poznámky, přidává a&nbsp;odškrtává úkoly</li>
+            <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg> Rychlé akce: shrnout, vylepšit, zkrátit, přeložit, opravit pravopis</li>
+            <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg> Změny vidíš v&nbsp;chatu – nebo si zapneš schvalování každé z&nbsp;nich</li>
+          </ul>
+        </div>
+        <div class="chat reveal" aria-label="Ukázka rozhovoru s AI asistentem">
+          <div class="chat-msg chat-user">Co mě čeká tento týden?</div>
+          <div class="chat-tool"><svg class="i i-sm" aria-hidden="true"><use href="#i-check"/></svg> Prošel úkoly</div>
+          <div class="chat-msg chat-ai">
+            <p>Tento týden tě čeká hlavně <a>Web Vimmi</a> a&nbsp;<a>Stěhování</a>:</p>
+            <ul>
+              <li><b>Dnes</b> – napsat texty k&nbsp;funkcím</li>
+              <li><b>Zítra</b> – sekce o&nbsp;soukromí</li>
+              <li><b>Čtvrtek</b> – přehlásit adresu <span class="chat-dot"></span></li>
+            </ul>
+            <p>Mám ti z&nbsp;toho udělat plán do dnešní poznámky?</p>
+          </div>
+          <div class="chat-msg chat-user">Jo, udělej</div>
+          <div class="chat-tool"><svg class="i i-sm" aria-hidden="true"><use href="#i-check"/></svg> Doplnil <a>dnešní poznámku</a></div>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <h3 class="providers-title reveal">Vyber si, kdo ti bude pomáhat</h3>
+        <div class="providers reveal">
+          <div class="provider provider-rec"><strong>Claude</strong><span class="tag tag-accent">doporučeno</span><p>Nejlepší podpora: přemýšlení, hledání na webu.</p></div>
+          <div class="provider provider-rec"><strong>OpenRouter</strong><span class="tag tag-accent">doporučeno</span><p>Stovky modelů jedním klíčem, i&nbsp;bezplatné.</p></div>
+          <div class="provider"><strong>OpenAI</strong><span class="tag">GPT</span><p>Modely GPT s&nbsp;nástroji i&nbsp;hledáním.</p></div>
+          <div class="provider"><strong>Gemini</strong><span class="tag">zdarma</span><p>Flash modely s&nbsp;bezplatnou úrovní.</p></div>
+          <div class="provider"><strong>Ollama</strong><span class="tag">offline</span><p>Běží jen na tvém počítači, zdarma.</p></div>
+          <div class="provider"><strong>Vlastní server</strong><span class="tag">kompatibilní</span><p>LM Studio, Groq, Mistral, DeepSeek…</p></div>
+        </div>
+        <p class="providers-note muted reveal">AI je volitelná. Používáš vlastní API klíč a&nbsp;platíš poskytovateli jen to, co spotřebuješ – nebo zvolíš bezplatný či lokální model.</p>
+      </div>
+    </section>
+
+    <!-- Privacy -->
+    <section class="section" id="soukromi" aria-labelledby="soukromi-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Soukromí</p>
+          <h2 id="soukromi-title">Tvoje poznámky patří tobě</h2>
+        </div>
+        <div class="privacy">
+          <article class="reveal">
+            <svg class="i i-lg" aria-hidden="true"><use href="#i-file"/></svg>
+            <h3>Obyčejné soubory</h3>
+            <p>Každá poznámka je soubor <code>.md</code> ve složce, kterou si vybereš. Otevřeš ho čímkoliv, zálohuješ jak chceš.</p>
+          </article>
+          <article class="reveal">
+            <svg class="i i-lg" aria-hidden="true"><use href="#i-lock"/></svg>
+            <h3>Žádný účet, žádný náš server</h3>
+            <p>Vimmi nemá servery ani přihlašování. Synchronizace jde přes tvůj vlastní soukromý GitHub a&nbsp;klíče jsou zašifrované v&nbsp;systémové klíčence.</p>
+          </article>
+          <article class="reveal">
+            <svg class="i i-lg" aria-hidden="true"><use href="#i-monitor"/></svg>
+            <h3>Klidně úplně offline</h3>
+            <p>S&nbsp;Ollamou běží i&nbsp;AI na tvém počítači. Jinak se poznámky posílají jen tehdy, když AI sám použiješ.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download -->
+    <section class="section download" id="stahnout" aria-labelledby="stahnout-title">
+      <div class="wrap">
+        <div class="download-card reveal">
+          <div class="section-head">
+            <p class="eyebrow">Stáhnout</p>
+            <h2 id="stahnout-title">Stáhni si Vimmi</h2>
+          </div>
+          <div class="os-tabs" role="tablist" aria-label="Operační systém">
+            <button role="tab" aria-selected="true" aria-controls="os-linux" id="tab-linux">Linux</button>
+            <button role="tab" aria-selected="false" aria-controls="os-win" id="tab-win" tabindex="-1">Windows</button>
+            <button role="tab" aria-selected="false" aria-controls="os-phone" id="tab-phone" tabindex="-1">iPhone a Android</button>
+            <button role="tab" aria-selected="false" aria-controls="os-mac" id="tab-mac" tabindex="-1">macOS</button>
+          </div>
+          <div class="os-panel" id="os-linux" role="tabpanel" aria-labelledby="tab-linux">
+            <p class="muted">Otevři terminál a&nbsp;vlož:</p>
+            <div class="command">
+              <svg class="i" aria-hidden="true"><use href="#i-terminal"/></svg>
+              <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/gerchanisko/vimmi-app/main/install.sh | bash</code>
+              <button class="btn btn-sm copy-btn" type="button" data-copy="#install-cmd" aria-label="Kopírovat příkaz">
+                <svg class="i i-sm" aria-hidden="true"><use href="#i-copy"/></svg><span>Kopírovat</span>
+              </button>
+            </div>
+            <p class="distros">
+              <span>Ubuntu</span><span>Debian</span><span>Mint</span><span>Fedora</span><span>Arch</span><span>Manjaro</span><span>openSUSE</span>
+            </p>
+            <p class="muted small">Skript doinstaluje, co chybí, sestaví aplikaci a&nbsp;přidá Vimmi do nabídky aplikací – odtud si ho připneš na panel. Instaluje se do domovské složky. Aktualizace: spusť příkaz znovu. <a href="https://github.com/gerchanisko/vimmi-app#instalace">Podrobnosti a&nbsp;odinstalace</a></p>
+          </div>
+          <div class="os-panel" id="os-phone" role="tabpanel" aria-labelledby="tab-phone" hidden>
+            <div class="win-download">
+              <a class="btn btn-primary btn-lg" href="https://gerchanisko.github.io/vimmi-app/">
+                <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg> Otevřít Vimmi
+              </a>
+              <p class="muted small">Webová aplikace · funguje i&nbsp;offline · bez App Store</p>
+              <ol class="steps">
+                <li>Otevři <b>gerchanisko.github.io/vimmi-app</b> v&nbsp;Safari (na Androidu v&nbsp;Chrome).</li>
+                <li>Klepni na <b>Sdílet</b> (čtvereček se šipkou) → <b>Přidat na plochu</b>. Vimmi pak poběží jako aplikace přes celou obrazovku.</li>
+                <li>V&nbsp;<b>Nastavení → Synchronizace</b> připoj stejný GitHub repozitář jako na počítači a&nbsp;poznámky se stáhnou.</li>
+              </ol>
+              <p class="muted small"><a href="navod.html">Podrobný návod pro iPhone, Android a&nbsp;synchronizaci</a></p>
+            </div>
+          </div>
+          <div class="os-panel" id="os-mac" role="tabpanel" aria-labelledby="tab-mac" hidden>
+            <div class="soon">
+              <span class="tag">brzy</span>
+              <p><strong>Verze pro macOS se připravuje.</strong> Do té doby funguje <a href="https://gerchanisko.github.io/vimmi-app/">webová aplikace</a> přímo v&nbsp;Safari.</p>
+              <a class="btn" href="https://github.com/gerchanisko/vimmi-app"><svg class="i" aria-hidden="true"><use href="#i-github"/></svg> Sledovat na GitHubu</a>
+            </div>
+          </div>
+          <div class="os-panel" id="os-win" role="tabpanel" aria-labelledby="tab-win" hidden>
+            <div class="win-download">
+              <a class="btn btn-primary btn-lg" href="https://github.com/gerchanisko/vimmi-app/releases/latest/download/Vimmi-Setup.exe">
+                <svg class="i" aria-hidden="true"><use href="#i-download"/></svg> Stáhnout Vimmi pro Windows
+              </a>
+              <p class="muted small">Windows 10 a&nbsp;11 (64 bit) · Instalátor <code>Vimmi-Setup.exe</code></p>
+              <ol class="steps">
+                <li>Spusť stažený <b>Vimmi-Setup.exe</b>.</li>
+                <li>Pokud Windows zobrazí modré okno SmartScreen, klikni na <b>Další informace</b> → <b>Přesto spustit</b>. Instalátor zatím není digitálně podepsaný.</li>
+                <li>Vimmi pak najdeš v&nbsp;nabídce Start a&nbsp;na ploše.</li>
+              </ol>
+              <p class="muted small"><a href="https://github.com/gerchanisko/vimmi-app/releases/latest">Všechny verze a&nbsp;poznámky k&nbsp;vydání</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="otazky" aria-labelledby="otazky-title">
+      <div class="wrap faq-wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Otázky</p>
+          <h2 id="otazky-title">Časté otázky</h2>
+        </div>
+        <div class="faq reveal">
+          <details>
+            <summary>Kolik Vimmi stojí?</summary>
+            <p>Aplikace je zdarma. Platíš jen za AI, pokud ji používáš – přímo poskytovateli podle spotřeby. Bezplatné modely (OpenRouter, Gemini) nebo lokální Ollama nestojí nic.</p>
+          </details>
+          <details>
+            <summary>Musím AI používat?</summary>
+            <p>Ne. Vimmi je plnohodnotná aplikace na poznámky i&nbsp;bez AI. Asistent je volitelný doplněk, který zapneš vložením API klíče.</p>
+          </details>
+          <details>
+            <summary>Kde jsou moje poznámky uložené?</summary>
+            <p>Na počítači ve složce, kterou si vybereš, jako obyčejné soubory <code>.md</code>; na telefonu v&nbsp;úložišti aplikace. Vimmi nemá žádný vlastní cloud ani účet. Mezi zařízeními se poznámky synchronizují přes soukromý repozitář na tvém GitHubu – nebo použij cokoliv jiného (Syncthing, Nextcloud, Dropbox).</p>
+          </details>
+          <details>
+            <summary>Funguje to s&nbsp;Obsidianem?</summary>
+            <p>Ano. Vimmi používá stejný formát – soubory Markdown, <code>[[odkazy]]</code>, <code>#tagy</code> a&nbsp;frontmatter. Stačí otevřít existující trezor.</p>
+          </details>
+          <details>
+            <summary>Co když AI udělá chybu?</summary>
+            <p>Každou změnu vidíš v&nbsp;chatu i&nbsp;s&nbsp;odkazem na poznámku. V&nbsp;nastavení si můžeš zapnout schvalování – pak ti asistent každou úpravu nejdřív ukáže jako rozdíl. Smazané poznámky jdou do koše uvnitř trezoru.</p>
+          </details>
+          <details>
+            <summary>Na jakých systémech Vimmi funguje?</summary>
+            <p>Na Windows 10 a&nbsp;11, na Linuxu (Ubuntu, Debian, Mint, Fedora, Arch, openSUSE…) a&nbsp;jako webová aplikace na iPhonu, iPadu a&nbsp;Androidu. Nativní verze pro macOS se připravuje, do té doby funguje webová aplikace.</p>
+          </details>
+          <details>
+            <summary>Jak dostanu poznámky z&nbsp;počítače do telefonu?</summary>
+            <p>Zapni synchronizaci: vytvoř si soukromý repozitář na GitHubu, v&nbsp;<b>Nastavení → Synchronizace</b> vlož token a&nbsp;repozitář na počítači i&nbsp;v&nbsp;telefonu. Pak se poznámky synchronizují samy – při spuštění, chvíli po úpravě a&nbsp;každou minutu. <a href="navod.html#sync">Návod krok za krokem</a>.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final">
+      <div class="wrap final-inner reveal">
+        <svg class="final-logo" aria-hidden="true"><use href="#logo"/></svg>
+        <h2>Méně chaosu.<br>Více prostoru pro to důležité.</h2>
+        <a class="btn btn-primary btn-lg" href="#stahnout"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg> Stáhnout Vimmi</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="#top"><svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg><span>Vimmi</span></a>
+      <p class="muted small">Poznámky, úkoly a&nbsp;projekty na jednom klidném místě.</p>
+      <nav class="footer-links" aria-label="Odkazy v patičce">
+        <a href="https://github.com/gerchanisko/vimmi-app">GitHub</a>
+        <a href="https://github.com/gerchanisko/vimmi-app/issues">Nahlásit problém</a>
+        <a href="#stahnout">Stáhnout</a>
+        <a href="navod.html">Návod</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
