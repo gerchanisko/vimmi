@@ -577,6 +577,69 @@ kbd {
   opacity: 0;
 }
 
+/* phone */
+.phone {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.phone-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+.phone h2 {
+  font-size: clamp(32px, 4.6vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.phone .lead {
+  margin-top: 20px;
+}
+.phone-cta {
+  justify-content: flex-start;
+  margin-top: 30px;
+}
+.phones {
+  position: relative;
+  height: clamp(420px, 46vw, 620px);
+}
+.phone-frame {
+  position: absolute;
+  margin: 0;
+  width: 42%;
+  aspect-ratio: 1170 / 2532;
+  border-radius: 34px;
+  padding: 8px;
+  background: #121216;
+  box-shadow: var(--shadow-window), 0 0 0 1px var(--border-strong);
+}
+.phone-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 27px;
+}
+.phone-front {
+  left: 29%;
+  top: 0;
+  z-index: 2;
+}
+.phone-back-left {
+  left: 0;
+  top: 9%;
+  transform: rotate(-6deg) scale(0.9);
+  opacity: 0.95;
+}
+.phone-back-right {
+  right: 0;
+  top: 9%;
+  transform: rotate(6deg) scale(0.9);
+  opacity: 0.95;
+}
+
 /* bento */
 .bento {
   display: grid;
@@ -1089,8 +1152,15 @@ kbd {
   .card-wide {
     grid-column: span 2;
   }
-  .ai-grid {
+  .ai-grid,
+  .phone-grid {
     grid-template-columns: 1fr;
+  }
+  .phones {
+    height: clamp(420px, 110vw, 620px);
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
   }
 }
 @media (max-width: 760px) {
