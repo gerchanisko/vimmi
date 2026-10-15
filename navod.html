@@ -175,7 +175,7 @@
             <li><b>Token name:</b> třeba <code>Vimmi – počítač</code> nebo <code>Vimmi – iPhone</code>.</li>
             <li><b>Expiration:</b> zvol, jak dlouho má platit (třeba <i>1 year</i>). Až vyprší, prostě vytvoříš nový.</li>
             <li><b>Repository access:</b> vyber <b>Only select repositories</b> → <b>Select repositories</b> → <code>vimmi-poznamky</code>.</li>
-            <li><b>Permissions:</b> klikni na <b>Add permissions</b>, do hledání napiš <b><code>Contents</code></b> (ne „Read and write“) a&nbsp;klikni na něj. Vedle <b>Contents</b> pak přepni přístup na <b>Read and write</b>. <i>Metadata: Read-only</i> se přidá samo.</li>
+            <li><b>Permissions:</b> klikni na <b>Add permissions</b>, do hledání napiš <b><code>Contents</code></b> (ne „Read and write“) a&nbsp;klikni na něj. Vedle <b>Contents</b> pak přepni přístup na <b>Read and write</b>. <i>Metadata: Read-only</i> se přidá samo. <span class="muted">Chceš mít události z Vimmi i v kalendáři telefonu (s připomínkami)? Přidej ještě <b><code>Gists</code></b> → <b>Read and write</b>.</span></li>
             <li>Klikni na <b>Generate token</b> a&nbsp;token (začíná <code>github_pat_</code>) hned zkopíruj – GitHub ho ukáže jen jednou.</li>
           </ol>
 
@@ -209,6 +209,7 @@
             <div><b>„Token je neplatný nebo vypršel“</b><p>Vytvoř nový token (krok B) a&nbsp;vlož ho znovu.</p></div>
             <div><b>„Repozitář … nebyl nalezen“</b><p>Překlep v&nbsp;názvu repozitáře, nebo token nemá v&nbsp;<i>Only select repositories</i> vybraný správný repozitář.</p></div>
             <div><b>„Token nemá oprávnění k&nbsp;zápisu“</b><p>V&nbsp;tokenu chybí <b>Contents: Read and write</b>. Uprav token na GitHubu nebo vytvoř nový.</p></div>
+            <div><b>„Token nemá přístup ke Gistům“</b><p>Kalendář v&nbsp;telefonu potřebuje u&nbsp;tokenu navíc <b>Gists: Read and write</b>. Uprav token na GitHubu (Edit → Add permissions → Gists).</p></div>
             <div><b>V&nbsp;hledání oprávnění se ukazuje „No items available“</b><p>Hledej <code>Contents</code>, ne „Read and write“ – úroveň přístupu se nastavuje až po přidání.</p></div>
             <div><b>Na iPhonu chybí „Přidat na plochu“</b><p>Otevři stránku v&nbsp;<b>Safari</b> a&nbsp;v&nbsp;menu Sdílet sjeď níž; případně klepni na <i>Upravit akce</i> a&nbsp;přidej ji.</p></div>
             <div><b>Poznámky se na telefonu neobjevily</b><p>Klepni na ikonu mráčku nahoře. Pokud je červená, otevře se nastavení s&nbsp;popisem chyby.</p></div>
