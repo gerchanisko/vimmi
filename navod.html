@@ -17,7 +17,7 @@
   <meta property="og:image" content="https://gerchanisko.github.io/vimmi/assets/og-image.png">
   <link rel="stylesheet" href="css/style.css">
   <script>
-    try { var t = localStorage.getItem("vimmi-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    var t = "dark"; try { t = localStorage.getItem("vimmi-theme") || "dark"; } catch (e) {} document.documentElement.dataset.theme = t;
   </script>
 </head>
 <body>
