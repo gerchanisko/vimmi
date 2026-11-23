@@ -52,6 +52,14 @@ html[data-theme="dark"] {
 }
 html[data-ground][data-theme="dark"] { --ground-bg: #1c2a31; --ground-surface: #24343c; --ground-ink: #e9eff1; --ground-muted: #a7b5bb; --ground-accent: #4cc3ce; }
 html[data-theme="dark"] .nav__logo path { fill: currentColor; }
+/* the feature panels stay daylight in dark mode: lit grounds behind white UI, like windows on the slate page */
+html[data-theme="dark"] #funkce .panel { --bg: #f7f9fa; --surface: #ecf0f2; --card: #ecf0f2; --line: rgb(31 48 56 / .12); --ink: #1f3038; --muted: #5d6b72; --accent: #0d7480; --accent-ink: #fff;
+  --fx-bg: #f7f9fa; --fx-surface: #ecf0f2; --fx-ink: #1f3038; --fx-muted: #5d6b72; --fx-accent: #0d7480; --fx-accent-ink: #fff; color: #1f3038; }
+@media (max-width: 639px) {
+  html[data-theme="dark"] #funkce .panel { background: linear-gradient(170deg, #e4ecf0, #c3d2db) !important; }
+  html[data-theme="dark"] #funkce .panel > canvas { display: none !important; }
+}
+html[data-theme="dark"] footer.closing { --action: var(--p-action); --action-ink: var(--p-action-ink); }
 .theme-toggle { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 99px; border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); background: transparent; color: var(--ink); cursor: pointer; transition: background .2s, transform .15s; }
 .theme-toggle:hover { background: color-mix(in oklab, var(--ink) 8%, transparent); }
 .theme-toggle:active { transform: scale(.94); }
@@ -74,6 +82,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 <link rel="modulepreload" href="assets/moments/moments.js">
 <link rel="modulepreload" href="assets/moments/lib.js">
 <link rel="modulepreload" href="assets/moments/iris-opens/moment.js">
+<link rel="modulepreload" href="assets/moments/counter-rolls/moment.js">
 <style>
   /* the client's logo beside the name (its own colours: black V, violet dot) */
   .nav__logo svg { width: 24px; height: 24px; flex: none; }
@@ -154,6 +163,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   @media (max-width: 639px) { .phone-shot { width: 220px; border-width: 6px; border-radius: 28px; } .phone-shot img { border-radius: 22px; } }
 
   /* downloads: rows with real icons, the install command wraps under its row */
+  .otazky-stats { margin-top: var(--s-7); grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dl-rows { list-style: none; margin: var(--s-7) 0 0; padding: 0; display: grid; }
   .dl-rows > li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid color-mix(in oklab, var(--ink) 13%, transparent); }
   .dl-rows__text { display: grid; gap: var(--s-2); justify-items: start; }
@@ -178,7 +188,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
            buttons pill, mark: the client's own logo (dealt ring, replaced), palette cool-white-slate
            (soot-pale-lime skipped: its near-black ground hides the logo's black V), type bricolage,
            ground sky, effect gradient-mesh in the hero art, card grounds painterly-landscape
-     moments: iris-opens on the dark band (#telefon) -->
+     moments: iris-opens on the dark band (#telefon), counter-rolls on the proof figures in #otazky -->
 <header class="nav nav--centre">
   <div class="wrap nav__bar">
     <a class="skip-link" href="#top">Přeskočit na obsah</a>
@@ -432,6 +442,12 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
           <h2 id="otazky-h">Otázky</h2>
           <p class="muted">Instalace v telefonu, nastavení synchronizace a AI krok za krokem.</p>
           <p><a class="link" href="navod.html">Přečíst celý návod</a></p>
+          <dl class="stats otazky-stats" data-moment="counter-rolls">
+            <div><dt class="t-small muted">za aplikaci, bez předplatného</dt><dd class="t-stat">0 Kč</dd></div>
+            <div><dt class="t-small muted">mezi synchronizacemi zařízení</dt><dd class="t-stat">15 s</dd></div>
+            <div><dt class="t-small muted">poskytovatelé AI na výběr</dt><dd class="t-stat">4</dd></div>
+            <div><dt class="t-small muted">Windows, Linux a web</dt><dd class="t-stat">3</dd></div>
+          </dl>
         </div>
         <div class="faq span-6 start-7">
           <div class="faq__item"><h3>Kolik Vimmi stojí?</h3><p>Nic. Vimmi je zdarma a kód je otevřený pod licencí GPL-3.0. AI platíš poskytovateli, jen pokud ji používáš.</p></div>
