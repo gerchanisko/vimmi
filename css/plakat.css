@@ -1,0 +1,26 @@
+/* Plakát: the guide page in the homepage's poster look (white / black / signal red, Archivo, square). */
+:root {
+  --bg: #ffffff; --bg-2: #f1f1f1; --surface: #ffffff; --surface-2: #f6f6f6;
+  --border: #0a0a0a; --border-strong: #0a0a0a;
+  --text: #0a0a0a; --text-2: #3d3d3d; --text-3: #555555;
+  --accent: #e8200f; --accent-strong: #e8200f; --accent-hover: #c41a0b; --accent-text: #c41a0b;
+  --accent-soft: rgb(232 32 15 / 0.08); --accent-line: rgb(232 32 15 / 0.45);
+  --shadow-window: 10px 10px 0 #e8200f; --shadow-card: none;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 0px; --radius-lg: 0px;
+}
+:root[data-theme="dark"] {
+  --bg: #0a0a0a; --bg-2: #171717; --surface: #121212; --surface-2: #171717;
+  --border: #ffffff; --border-strong: #ffffff;
+  --text: #ffffff; --text-2: #c4c4c4; --text-3: #a8a8a8;
+  --accent: #ff3b2a; --accent-strong: #ff3b2a; --accent-hover: #ff5848; --accent-text: #ff5a4a;
+  --accent-soft: rgb(255 59 42 / 0.14); --accent-line: rgb(255 59 42 / 0.5);
+  --shadow-window: 10px 10px 0 #ff3b2a; --shadow-card: none;
+}
+h1, h2 { font-family: "Archivo Black", "Archivo", sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: -0.025em; line-height: 1; }
+h3 { font-weight: 700; }
+header.nav { border-bottom: 3px solid var(--text); }
+:where(.btn, button, .card, img, figure, pre, code, kbd, .step, .shot) { border-radius: 0 !important; }
+.btn-primary, .btn--primary { background: var(--accent); color: #fff; }
+:root[data-theme="dark"] :is(.btn-primary, .btn--primary) { color: #0a0a0a; }
+:where(.command, .tip, .nav-links a, .icon-btn, .toc a) { border-radius: 0 !important; }

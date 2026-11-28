@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="cs" data-type="software" data-radius="soft" data-ground="sky" data-buttons="pill" data-motion>
+<html lang="cs" data-type="software" data-radius="sharp" data-ground="sky" data-buttons="block" data-motion data-style="plakat">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,13 +13,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<meta name="theme-color" content="#11181b">
+<meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://gerchanisko.github.io/vimmi/">
 <meta name="site-kind" content="software">
 <meta name="page-type" content="software">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..700&family=Figtree:wght@400..600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/system.css">
 <link rel="stylesheet" href="assets/ui/cards.css">
 <link rel="stylesheet" href="assets/motion/motion.css">
@@ -28,39 +28,42 @@
 <link rel="stylesheet" href="assets/icons/icon.css">
 <style>
 :root {
-  --p-bg: #f7f9fa; --p-surface: #ecf0f2; --p-ink: #1f3038; --p-muted: #5d6b72;
-  --p-accent: #0d7480; --p-accent-ink: #ffffff; --p-action: #0d7480; --p-action-ink: #ffffff;
-  --p-inv-bg: #1f3038; --p-inv-surface: #2c3c44; --p-inv-ink: #f7f9fa; --p-inv-muted: #9ea7ab;
-  --p-inv-accent: #f7f9fa; --p-inv-accent-ink: #1f3038; --p-inv-action: #f7f9fa; --p-inv-action-ink: #1f3038;
-  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
-  --font-text: "Figtree", system-ui, sans-serif;
+  /* Plakát: white paper, black ink, signal red */
+  --p-bg: #ffffff; --p-surface: #f1f1f1; --p-ink: #0a0a0a; --p-muted: #3d3d3d;
+  --p-accent: #e8200f; --p-accent-ink: #ffffff; --p-action: #e8200f; --p-action-ink: #ffffff;
+  --p-inv-bg: #0a0a0a; --p-inv-surface: #1c1c1c; --p-inv-ink: #ffffff; --p-inv-muted: #c4c4c4;
+  --p-inv-accent: #ff3b2a; --p-inv-accent-ink: #0a0a0a; --p-inv-action: #ff3b2a; --p-inv-action-ink: #0a0a0a;
+  --font-display: "Archivo Black", "Archivo", system-ui, sans-serif;
+  --font-text: "Archivo", system-ui, sans-serif;
   --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --display-weight: 400;
-  --display-tracking: -0.03em;
-  --display-tracking-xl: -0.04em;
-  --display-stretch: 96%;
+  --display-tracking: -0.025em;
+  --display-tracking-xl: -0.035em;
+  --display-stretch: 100%;
+  --line-w: 3px;
 }
 </style>
 <style>
-/* dark mode (the default): the same teal system on a deep slate ground */
+/* dark mode (the default): the same poster at night, black paper, white ink, red */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --p-bg: #11181b; --p-surface: #1a2327; --p-ink: #e9eff1; --p-muted: #a3b0b6;
-  --p-accent: #4cc3ce; --p-accent-ink: #0b1416; --p-action: #4cc3ce; --p-action-ink: #0b1416;
-  --p-inv-bg: #0a0f11; --p-inv-surface: #151d21; --p-inv-ink: #f1f5f6; --p-inv-muted: #a3adb1;
-  --p-inv-accent: #f1f5f6; --p-inv-accent-ink: #0a0f11; --p-inv-action: #f1f5f6; --p-inv-action-ink: #0a0f11;
+  --p-bg: #0a0a0a; --p-surface: #171717; --p-ink: #ffffff; --p-muted: #bdbdbd;
+  --p-accent: #ff3b2a; --p-accent-ink: #0a0a0a; --p-action: #ff3b2a; --p-action-ink: #0a0a0a;
+  --p-inv-bg: #ff3b2a; --p-inv-surface: #ff5848; --p-inv-ink: #0a0a0a; --p-inv-muted: #2a0905;
+  --p-inv-accent: #0a0a0a; --p-inv-accent-ink: #ffffff; --p-inv-action: #0a0a0a; --p-inv-action-ink: #ffffff;
 }
-html[data-ground][data-theme="dark"] { --ground-bg: #1c2a31; --ground-surface: #24343c; --ground-ink: #e9eff1; --ground-muted: #a7b5bb; --ground-accent: #4cc3ce; }
+html[data-ground] { --ground-bg: #f1f1f1; --ground-surface: #e4e4e4; --ground-ink: #0a0a0a; --ground-muted: #3d3d3d; --ground-accent: #e8200f; }
+html[data-ground][data-theme="dark"] { --ground-bg: #171717; --ground-surface: #222; --ground-ink: #fff; --ground-muted: #bdbdbd; --ground-accent: #ff3b2a; }
 html[data-theme="dark"] .nav__logo path { fill: currentColor; }
 /* the feature panels stay daylight in dark mode: lit grounds behind white UI, like windows on the slate page */
-html[data-theme="dark"] #funkce .panel { --bg: #f7f9fa; --surface: #ecf0f2; --card: #ecf0f2; --line: rgb(31 48 56 / .12); --ink: #1f3038; --muted: #5d6b72; --accent: #0d7480; --accent-ink: #fff;
-  --fx-bg: #f7f9fa; --fx-surface: #ecf0f2; --fx-ink: #1f3038; --fx-muted: #5d6b72; --fx-accent: #0d7480; --fx-accent-ink: #fff; color: #1f3038; }
+html[data-theme="dark"] #funkce .panel { --bg: #ffffff; --surface: #f1f1f1; --card: #f1f1f1; --line: rgb(10 10 10 / .14); --ink: #0a0a0a; --muted: #3d3d3d; --accent: #e8200f; --accent-ink: #fff;
+  --fx-bg: #ffffff; --fx-surface: #f1f1f1; --fx-ink: #0a0a0a; --fx-muted: #3d3d3d; --fx-accent: #e8200f; --fx-accent-ink: #fff; color: #0a0a0a; }
 @media (max-width: 639px) {
-  html[data-theme="dark"] #funkce .panel { background: linear-gradient(170deg, #e4ecf0, #c3d2db) !important; }
+  html[data-theme="dark"] #funkce .panel { background: #f1f1f1 !important; }
   html[data-theme="dark"] #funkce .panel > canvas { display: none !important; }
 }
 html[data-theme="dark"] footer.closing { --action: var(--p-action); --action-ink: var(--p-action-ink); }
-.theme-toggle { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 99px; border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); background: transparent; color: var(--ink); cursor: pointer; transition: background .2s, transform .15s; }
+.theme-toggle { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 0; border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); background: transparent; color: var(--ink); cursor: pointer; transition: background .2s, transform .15s; }
 .theme-toggle:hover { background: color-mix(in oklab, var(--ink) 8%, transparent); }
 .theme-toggle:active { transform: scale(.94); }
 .theme-toggle svg { width: 18px; height: 18px; }
@@ -75,7 +78,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 <link rel="stylesheet" href="assets/ui/notify/fragment.css">
 <link rel="stylesheet" href="assets/ui/integrations/fragment.css">
 <link rel="stylesheet" href="assets/diagrams/diagram.css">
-<script>(function(){var t="dark";try{t=localStorage.getItem("vimmi-theme")||"dark"}catch(e){}document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==="dark"?"#11181b":"#f7f9fa"})()</script>
+<script>(function(){var t="dark";try{t=localStorage.getItem("vimmi-theme")||"dark"}catch(e){}document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==="dark"?"#0a0a0a":"#ffffff"})()</script>
 <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <script src="assets/backgrounds/backgrounds.js"></script>
 <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
@@ -107,21 +110,21 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   .d-rows { display: grid; border-top: 1px solid rgb(0 0 0 / .07); }
   .d-row { display: grid; grid-template-columns: 18px minmax(0, 1fr) 56px 96px; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid rgb(0 0 0 / .07); font-size: 13px; }
   .d-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #b8bec3; }
-  .d-check.is-done { background: #0d7480; border-color: #0d7480; }
+  .d-check.is-done { background: #e8200f; border-color: #e8200f; }
   .d-row b { display: block; font-weight: 500; color: #16181a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .d-row.is-done b { color: #6f757b; text-decoration: line-through; }
   .d-row small { color: #6f757b; font-size: 13px; }
   .d-row .num { text-align: right; color: #5f656b; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .d-chip { justify-self: end; display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 99px; font-size: 13px; font-weight: 500; background: #e3f1f2; color: #0b5f69; white-space: nowrap; }
+  .d-chip { justify-self: end; display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 99px; font-size: 13px; font-weight: 500; background: #ededed; color: #0a0a0a; white-space: nowrap; }
   .d-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .d-chip--warm { background: #fdf0dc; color: #8a5300; }
-  .d-chip--red { background: #fbe6e3; color: #a3271b; }
+  .d-chip--warm { background: #0a0a0a; color: #fff; }
+  .d-chip--red { background: #e8200f; color: #fff; }
   .d-card { background: #fff; color: #16181a; border-radius: 12px; padding: 14px 16px; font: 400 14px/1.4 var(--font-text); text-align: left;
             box-shadow: 0 0 0 1px rgb(0 0 0 / .07), 0 18px 44px -20px rgb(0 0 0 / .45); }
   .d-card h5 { margin: 0; font: 600 14px/1.3 var(--font-text); }
   .d-card__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
   .d-note__line { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; color: #3d4247; border-top: 1px solid rgb(0 0 0 / .06); }
-  .d-note__line i { width: 18px; height: 18px; border-radius: 50%; flex: none; display: grid; place-items: center; background: #e3f1f2; color: #0b5f69; font-style: normal; font-size: 12px; font-weight: 700; }
+  .d-note__line i { width: 18px; height: 18px; border-radius: 50%; flex: none; display: grid; place-items: center; background: #e8200f; color: #fff; font-style: normal; font-size: 12px; font-weight: 700; }
   .d-note__line i.q { background: #eef0f2; color: #3d4247; }
   .d-note__line b { font-weight: 500; color: #16181a; }
   .hero__art > .ly-piece--note { left: var(--s-6); bottom: var(--s-6); width: 300px; z-index: 2; }
@@ -173,13 +176,61 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   @media (max-width: 639px) { .dl-rows__links .btn { width: auto; } #stahnout .frame--split { --ratio: 150%; } #stahnout .dl-shot { width: 760px; } }
   /* the open note drawn as Vimmi renders it: links underlined, tags as chips, tasks with boxes */
   .ui-doc u { text-decoration-color: color-mix(in oklab, currentColor 45%, transparent); text-underline-offset: 3px; }
-  .doc-tag { display: inline-block; padding: 0 6px; border-radius: 5px; background: #e3f1f2; color: #0b5f69; font-size: .92em; }
+  .doc-tag { display: inline-block; padding: 0 6px; border-radius: 0; background: #0a0a0a; color: #fff; font-size: .92em; }
   .doc-task { display: flex; align-items: center; gap: 8px; }
   .doc-task::before { content: ""; width: 13px; height: 13px; flex: none; border-radius: 3px; border: 1.5px solid #b8bec3; }
   .doc-task.is-done { color: #7b8086; text-decoration: line-through; }
-  .doc-task.is-done::before { background: #0d7480; border-color: #0d7480; }
+  .doc-task.is-done::before { background: #e8200f; border-color: #e8200f; }
   .phone-facts { margin: var(--s-5) 0; padding: 0; list-style: none; display: grid; gap: var(--s-2); }
 
+
+  /* ---------- Plakát: the poster look (thick black rules, square corners, red offset shadows) ---------- */
+  h1, h2 { text-transform: uppercase; }
+  h2 { line-height: .98; }
+  .nav { border-bottom: var(--line-w) solid var(--ink); }
+  .btn { font-weight: 700; letter-spacing: .01em; }
+  .btn--secondary { border-width: var(--line-w); }
+  :is(.card, .ui.app, .frame, .panel, .dl-shot, .phone-shot, .d-card) { border-radius: 0 !important; }
+  .ui.app { border: var(--line-w) solid var(--ink); }
+  /* feature panels: flat paper with a black rule instead of the painted ground */
+  #funkce .panel { background: #f1f1f1 !important; border: var(--line-w) solid var(--ink); }
+  #funkce .panel > canvas { display: none !important; }
+  html[data-theme="dark"] #funkce .panel { border-color: #ffffff; }
+  #telefon h2 { margin-bottom: var(--s-5); }
+  .ui.app { box-shadow: 14px 14px 0 var(--accent); }
+  .dl-shot { box-shadow: 0 0 0 var(--line-w) #0a0a0a, 14px 14px 0 var(--accent); }
+  .d-win, .d-card { border-radius: 0; box-shadow: none; border: var(--line-w) solid #0a0a0a; }
+  .d-btn, .d-check, .d-chip { border-radius: 0; }
+  .d-win__dots i { border-radius: 0; background: #0a0a0a; }
+  .d-win__dots i:first-child { background: #e8200f; }
+
+  /* hero, layout C: the giant headline, the window cropped into the bottom-right corner */
+  .hero-poster { position: relative; overflow: hidden; padding-block: clamp(36px, 5vw, 72px) 0; border-bottom: var(--line-w) solid var(--ink); }
+  main > .hero-poster > .wrap { display: block !important; height: auto; }
+  .hero-poster h1 { font: 400 clamp(46px, 7vw, 116px)/.9 var(--font-display); letter-spacing: -.035em; margin: 0; max-width: 13ch; text-wrap: balance; }
+  .hero-poster h1 .r { color: var(--accent); }
+  .hero-poster__row { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-7); margin-top: clamp(24px, 3vw, 44px); }
+  .hero-poster__text { padding-bottom: clamp(48px, 7vw, 120px); }
+  .hero-poster .hero__lead { font-size: clamp(17px, .5vw + 14px, 20px); line-height: 1.5; max-width: 42ch; margin: 0; }
+  .hero-poster .btn-row { margin-top: var(--s-6); }
+  .hero-poster .hero__proof { margin-top: var(--s-5); }
+  .hero-poster__art { position: relative; min-height: 420px; }
+  .poster-win { position: absolute; left: 0; top: 8px; width: 920px; transform: rotate(-4deg); transform-origin: top left; box-shadow: 18px 18px 0 var(--accent) !important; }
+  .poster-win .d-win__body { min-height: 520px; }
+  .poster-note { position: absolute; left: -48px; top: 300px; width: 300px; z-index: 2; transform: rotate(2deg); box-shadow: 10px 10px 0 #0a0a0a !important; }
+  html[data-theme="dark"] .poster-note { box-shadow: 10px 10px 0 var(--accent) !important; }
+  @media (max-width: 1023px) {
+    .hero-poster__row { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .hero-poster__text { padding-bottom: var(--s-6); }
+    .hero-poster__art { min-height: 380px; margin-inline: calc(-1 * var(--s-4)); }
+    .poster-win { left: var(--s-5); width: 760px; top: 24px; }
+    .poster-note { left: var(--s-4); top: auto; bottom: 28px; width: 270px; }
+  }
+  @media (max-width: 639px) {
+    .hero-poster__art { min-height: 330px; }
+    .poster-win { width: 560px; }
+    .poster-note { width: 250px; bottom: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -192,7 +243,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 <header class="nav nav--centre">
   <div class="wrap nav__bar">
     <a class="skip-link" href="#top">Přeskočit na obsah</a>
-    <a class="nav__logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z" fill="#1f3038"/><circle cx="18.38" cy="6.24" r="2.24" fill="#6D63FF"/></svg>Vimmi</a>
+    <a class="nav__logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z" fill="currentColor"/><circle cx="18.38" cy="6.24" r="2.24" fill="#6D63FF"/></svg>Vimmi</a>
     <nav class="nav__links" aria-label="Hlavní">
       <div class="nav__item"><a class="nav__link" href="#aplikace">Aplikace</a></div>
       <div class="nav__item"><a class="nav__link" href="#funkce">Funkce</a></div>
@@ -211,16 +262,17 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 </header>
 
 <main id="top">
-  <section class="hero hero--collage" data-enter aria-labelledby="hero-h">
-    <div class="wrap"><div class="hero-text grid hero__grid">
-      <div class="hero__text span-5">
-        <h1 id="hero-h">Aplikace na poznámky, úkoly a kalendář s AI</h1>
-        <p class="hero__lead">Vimmi ukládá poznámky jako obyčejné soubory Markdown na tvém počítači a skládá z nich přehled dne, kalendář a projekty. AI asistent do nich umí rovnou zapisovat.</p>
-        <div class="btn-row"><a class="btn btn--primary" href="#stahnout">Stáhnout Vimmi<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="https://gerchanisko.github.io/vimmi-app/">Otevřít v prohlížeči</a></div>
-        <p class="hero__proof">Zdarma pro Windows, Linux a iPhone. Otevřený kód pod licencí GPL-3.0.</p>
-      </div>
-      <div class="hero__art span-6 start-7" data-fx="gradient-mesh" data-fx-seed="41" role="img" aria-label="Okno Vimmi s dnešními úkoly a asistent, který zapsal doktora do kalendáře">
-        <div class="ly-piece ly-piece--main d-win" aria-hidden="true">
+  <section class="hero hero-poster" data-enter aria-labelledby="hero-h">
+    <div class="wrap">
+      <h1 id="hero-h">Poznámky, úkoly a <span class="r">kalendář</span> s&nbsp;AI</h1>
+      <div class="hero-poster__row">
+        <div class="hero-poster__text">
+          <p class="hero__lead">Vimmi ukládá poznámky jako obyčejné soubory Markdown na tvém počítači a skládá z nich přehled dne, kalendář a projekty. AI asistent do nich umí rovnou zapisovat.</p>
+          <div class="btn-row"><a class="btn btn--primary" href="#stahnout">Stáhnout Vimmi<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="https://gerchanisko.github.io/vimmi-app/">Otevřít v prohlížeči</a></div>
+          <p class="hero__proof">Zdarma pro Windows, Linux a iPhone. Otevřený kód pod licencí GPL-3.0.</p>
+        </div>
+        <div class="hero-poster__art" role="img" aria-label="Okno Vimmi s dnešními úkoly a asistent, který zapsal doktora do kalendáře">
+        <div class="poster-win d-win" aria-hidden="true">
           <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span>Vimmi · Moje poznámky</span></div>
           <div class="d-win__body">
             <div class="d-side">
@@ -242,14 +294,15 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
             </div>
           </div>
         </div>
-        <div class="ly-piece ly-piece--note d-card" aria-hidden="true" data-ly-steps="700">
+        <div class="poster-note d-card" aria-hidden="true" data-ly-steps="700">
           <div class="d-card__row"><h5>Asistent</h5><span class="d-chip" data-step data-step-at="4">Hotovo</span></div>
           <div class="d-note__line" data-step><i class="q">?</i><span>Zítra v 10 mám <b>doktora</b></span></div>
           <div class="d-note__line" data-step><i>✓</i><span>Přidáno do kalendáře: <b>úterý 10:00</b></span></div>
           <div class="d-note__line" data-step><i>✓</i><span>Připomínka <b>15 minut</b> předem</span></div>
         </div>
+        </div>
       </div>
-    </div></div>
+    </div>
   </section>
 
   <section class="section" id="aplikace" aria-labelledby="aplikace-h">
@@ -473,7 +526,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
     <div class="closing__links">
       <div class="grid">
         <div class="span-4 stack-4">
-          <a class="nav__logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z" fill="#1f3038"/><circle cx="18.38" cy="6.24" r="2.24" fill="#6D63FF"/></svg>Vimmi</a>
+          <a class="nav__logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h5l5 10 1.75-3.5h5L14 20h-4z" fill="currentColor"/><circle cx="18.38" cy="6.24" r="2.24" fill="#6D63FF"/></svg>Vimmi</a>
           <p class="footer__lede">Poznámky, úkoly a kalendář v obyčejných souborech Markdown.</p>
         </div>
         <div class="span-2 footer__col"><h3>Aplikace</h3><ul><li><a href="#funkce">Funkce</a></li><li><a href="#telefon">Telefon</a></li><li><a href="#stahnout">Stažení</a></li></ul></div>
